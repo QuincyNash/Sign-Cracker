@@ -4,6 +4,7 @@ import SidePanel from "../SidePanel";
 
 interface AppState {
 	sidePanelHidden: boolean;
+	signs: Array<Array<string>>;
 }
 
 class App extends React.Component {
@@ -14,6 +15,7 @@ class App extends React.Component {
 		this.toggleSidePanel = this.toggleSidePanel.bind(this);
 		this.state = {
 			sidePanelHidden: false,
+			signs: [["A", "B", "C"]],
 		};
 	}
 
@@ -35,6 +37,7 @@ class App extends React.Component {
 				<Graph expanded={this.state.sidePanelHidden}></Graph>
 				<SidePanel
 					hidden={this.state.sidePanelHidden}
+					signs={this.state.signs}
 					toggleHidden={this.toggleSidePanel}
 				></SidePanel>
 			</div>

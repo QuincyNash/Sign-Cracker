@@ -9,6 +9,7 @@ interface SidePanelState {
 
 interface SidePanelProps {
 	hidden: boolean;
+	signs: Array<Array<string>>;
 	toggleHidden: React.MouseEventHandler;
 }
 
@@ -25,11 +26,28 @@ class SidePanel extends React.Component<SidePanelProps> {
 		this.getNotSelectedPanelStyles = this.getNotSelectedPanelStyles.bind(this);
 
 		this.state = {
-			panel: "Analyze",
+			panel: "Signs",
 		};
 	}
 
+	componentDidMount() {
+		window.addEventListener("resize", () => {
+			let iconElement = document.getElementById("hide-icon");
+			let iconType = iconElement?.textContent;
+			if (iconType !== this.getIconType()) {
+				this.forceUpdate();
+			}
+		});
+	}
+
 	getIconType() {
+		if (window.innerWidth < 768) {
+			let iconType = "keyboard_double_arrow_down";
+			if (this.props.hidden) {
+				iconType = "keyboard_double_arrow_up";
+			}
+			return iconType;
+		}
 		let iconType = "keyboard_double_arrow_right";
 		if (this.props.hidden) {
 			iconType = "keyboard_double_arrow_left";
@@ -47,14 +65,14 @@ class SidePanel extends React.Component<SidePanelProps> {
 		if (this.state.panel === "Analyze") {
 			return <AnalyzePanel></AnalyzePanel>;
 		} else if (this.state.panel === "Signs") {
-			return <SignsPanel></SignsPanel>;
+			return <SignsPanel signs={this.props.signs}></SignsPanel>;
 		} else if (this.state.panel === "Predict") {
 			return <PredictPanel></PredictPanel>;
 		}
 	}
 
 	getHiddenStyles() {
-		return "translate-x-[calc(100%-36px)]";
+		return "translate-y-[calc(100%-36px)] md:translate-x-[calc(100%-36px)] md:translate-y-0";
 	}
 
 	getSelectedPanelStyles() {
@@ -69,7 +87,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 		return (
 			<div
 				className={
-					"flex w-2/5 h-full absolute float-right left-[60%] transition-transform duration-500 " +
+					"flex flex-col w-full h-[50%] absolute left-0 top-[50%] transition-transform duration-500 md:left-[60%] md:top-0 md:w-2/5 md:h-full md:flex-row " +
 					(this.props.hidden ? this.getHiddenStyles() : "")
 				}
 			>
@@ -77,7 +95,10 @@ class SidePanel extends React.Component<SidePanelProps> {
 					className="w-9 h-9 rounded-l cursor-pointer bg-gray-100 transition-colors hover:bg-gray-200"
 					onClick={this.props.toggleHidden}
 				>
-					<span className={"material-icons w-full h-full select-none text-4xl"}>
+					<span
+						id="hide-icon"
+						className={"material-icons w-full h-full select-none text-4xl"}
+					>
 						{this.getIconType()}
 					</span>
 				</div>
@@ -87,7 +108,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 							return (
 								<span
 									className={
-										"inline-block w-1/3 text-sm p-1 select-none cursor-pointer text-center font-serif transition-colors sm:text-base sm:p-0.5 md:text-lg md:p-0 lg:text-2xl xl:text-3xl " +
+										"inline-block w-1/3 p-1 text-lg select-none cursor-pointer text-center font-serif transition-colors sm:text-xl md:text-xl md:p-0 lg:text-2xl xl:text-3xl " +
 										(this.state.panel === panel
 											? this.getSelectedPanelStyles()
 											: this.getNotSelectedPanelStyles())
@@ -100,7 +121,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 							);
 						})}
 					</nav>
-					<main className="w-full grow">{this.getPanel()}</main>
+					<div className="w-full grow">{this.getPanel()}</div>
 				</main>
 			</div>
 		);
