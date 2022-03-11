@@ -24,6 +24,12 @@ class App extends React.Component {
 	}
 
 	render() {
+		if (this.state.sidePanelHidden) {
+			document.body.style.overflowY = "hidden";
+		} else {
+			document.body.style.overflowY = "auto";
+		}
+
 		return (
 			<div className="w-full h-full">
 				<Graph expanded={this.state.sidePanelHidden}></Graph>
