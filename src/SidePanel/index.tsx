@@ -86,6 +86,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 	render() {
 		return (
 			<div
+				id="side-panel"
 				className={
 					"flex flex-col w-full h-[50%] absolute left-0 top-[50%] transition-transform duration-500 md:left-[60%] md:top-0 md:w-2/5 md:h-full md:flex-row " +
 					(this.props.hidden ? this.getHiddenStyles() : "")

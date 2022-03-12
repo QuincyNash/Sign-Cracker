@@ -22,6 +22,19 @@ class App extends React.Component {
 	toggleSidePanel(_event: React.MouseEvent) {
 		let newState = { ...this.state };
 		newState.sidePanelHidden = !newState.sidePanelHidden;
+		if (newState.sidePanelHidden) {
+			setTimeout(() => {
+				console.log("NO TRANSITION");
+				let sidePanelElement = document.getElementById("side-panel");
+				sidePanelElement?.classList.remove("transition-transform");
+				sidePanelElement?.classList.add("transition-none");
+			}, 500);
+		} else {
+			console.log("TRANSITION");
+			let sidePanelElement = document.getElementById("side-panel");
+			sidePanelElement?.classList.remove("transition-none");
+			sidePanelElement?.classList.add("transition-transform");
+		}
 		this.setState(newState);
 	}
 
