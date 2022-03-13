@@ -105,7 +105,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 				</div>
 				<main className="flex flex-col h-full grow">
 					<nav>
-						{["Analyze", "Signs", "Predict"].map((panel: string, _i) => {
+						{["Analyze", "Signs", "Predict"].map((panel: string, i) => {
 							return (
 								<span
 									className={
@@ -114,7 +114,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 											? this.getSelectedPanelStyles()
 											: this.getNotSelectedPanelStyles())
 									}
-									key={panel}
+									key={i}
 									onClick={() => this.switchPanel(panel)}
 								>
 									{panel}
