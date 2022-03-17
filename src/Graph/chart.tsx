@@ -1,48 +1,57 @@
-import { ChartConfiguration } from "chart.js";
+import { ChartOptions } from "chart.js";
+import { fullnames } from "../App";
 
-const options: ChartConfiguration = {
-	type: "bar",
-	data: {
-		labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-		datasets: [
-			{
-				label: "# of Votes",
-				data: [12, 19, 3, 5, 2, 3],
-				backgroundColor: [
-					"rgba(255, 99, 132, 0.2)",
-					"rgba(54, 162, 235, 0.2)",
-					"rgba(255, 206, 86, 0.2)",
-					"rgba(75, 192, 192, 0.2)",
-					"rgba(153, 102, 255, 0.2)",
-					"rgba(255, 159, 64, 0.2)",
-				],
-				borderColor: [
-					"rgba(255, 99, 132, 1)",
-					"rgba(54, 162, 235, 1)",
-					"rgba(255, 206, 86, 1)",
-					"rgba(75, 192, 192, 1)",
-					"rgba(153, 102, 255, 1)",
-					"rgba(255, 159, 64, 1)",
-				],
-				borderWidth: 1,
-			},
-		],
-	},
-	options: {
+function getChartOptions(chartLabel: string) {
+	let isDark = document.documentElement.classList.contains("dark");
+	let color = isDark ? "#dcdcdc" : "#666";
+	let borderColor = isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
+
+	const options: ChartOptions = {
 		responsive: true,
 		maintainAspectRatio: false,
 		scales: {
+			x: {
+				ticks: {
+					color,
+				},
+				grid: {
+					color: borderColor,
+				},
+			},
 			y: {
 				beginAtZero: true,
+				ticks: {
+					color,
+				},
+				grid: {
+					color: borderColor,
+				},
 			},
 		},
 		plugins: {
 			legend: {
 				onClick: () => {},
+				labels: {
+					color,
+				},
+			},
+			tooltip: {
+				callbacks: {
+					title: (data) => {
+						let label: any = data[0].label;
+						return Object.entries(fullnames)[
+							Object.keys(fullnames).indexOf(label)
+						][1];
+					},
+					label: (data) => {
+						return `${chartLabel}: ${data.formattedValue}`;
+					},
+				},
 			},
 		},
-		animations: {},
-	},
-};
+	};
 
-export default options;
+	return options;
+}
+
+export default getChartOptions;

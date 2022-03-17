@@ -1,4 +1,5 @@
 import React from "react";
+import { fullnames } from "../App";
 import AnalyzePanel from "../panels/AnalyzePanel";
 import PredictPanel from "../panels/PredictPanel";
 import SignsPanel from "../panels/SignsPanel";
@@ -9,7 +10,9 @@ interface SidePanelState {
 
 interface SidePanelProps {
 	hidden: boolean;
-	signs: Array<Array<string>>;
+	fullnames: typeof fullnames;
+	signs: Array<Array<keyof typeof fullnames>>;
+	deleteSign: Function;
 	toggleHidden: React.MouseEventHandler;
 }
 
@@ -65,7 +68,13 @@ class SidePanel extends React.Component<SidePanelProps> {
 		if (this.state.panel === "Analyze") {
 			return <AnalyzePanel></AnalyzePanel>;
 		} else if (this.state.panel === "Signs") {
-			return <SignsPanel signs={this.props.signs}></SignsPanel>;
+			return (
+				<SignsPanel
+					fullnames={this.props.fullnames}
+					deleteSign={this.props.deleteSign}
+					signs={this.props.signs}
+				></SignsPanel>
+			);
 		} else if (this.state.panel === "Predict") {
 			return <PredictPanel></PredictPanel>;
 		}
@@ -76,11 +85,11 @@ class SidePanel extends React.Component<SidePanelProps> {
 	}
 
 	getSelectedPanelStyles() {
-		return "bg-gray-600 text-white";
+		return "bg-gray-600 text-white dark:bg-gray-300 dark:text-gray-600";
 	}
 
 	getNotSelectedPanelStyles() {
-		return "bg-gray-300 text-black hover:bg-gray-400";
+		return "bg-gray-300 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-[#dcdcdc] dark:hover:bg-gray-600";
 	}
 
 	render() {
@@ -93,7 +102,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 				}
 			>
 				<div
-					className="w-9 h-9 rounded-l cursor-pointer bg-gray-100 transition-colors hover:bg-gray-200"
+					className="w-9 h-9 grow rounded-t md:rounded-none md:rounded-l cursor-pointer bg-gray-100 transition-colors hover:bg-gray-200  dark:bg-gray-400 dark:hover:bg-gray-300"
 					onClick={this.props.toggleHidden}
 				>
 					<span
@@ -103,7 +112,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 						{this.getIconType()}
 					</span>
 				</div>
-				<main className="flex flex-col h-full grow">
+				<main className="flex flex-col w-full h-[calc(100%-2.25rem)] md:h-full">
 					<nav>
 						{["Analyze", "Signs", "Predict"].map((panel: string, i) => {
 							return (
@@ -122,7 +131,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 							);
 						})}
 					</nav>
-					<div className="w-full grow">{this.getPanel()}</div>
+					<div className="w-full grow overflow-auto">{this.getPanel()}</div>
 				</main>
 			</div>
 		);

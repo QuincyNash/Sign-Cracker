@@ -1,26 +1,30 @@
 import React from "react";
-import ChartOptions from "./chart";
+import { fullnames } from "../App";
+import getChartOptions from "./chart";
 import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
 
 interface GraphProps {
 	expanded: boolean;
-}
-
-interface GraphState {
-	chart?: Chart;
+	data: any;
+	label: string;
+	labels: any;
+	type: any;
+	signs: Array<Array<keyof typeof fullnames>>;
+	fullnames: typeof fullnames;
 }
 
 class Graph extends React.Component<GraphProps> {
-	state: GraphState;
+	chart?: Chart;
+	expanded: boolean;
 
 	constructor(props: any) {
 		super(props);
+
 		this.getExpandedStyles = this.getExpandedStyles.bind(this);
 		this.getNotExpandedStyles = this.getNotExpandedStyles.bind(this);
-
-		this.state = {};
+		this.expanded = false;
 	}
 
 	getNotExpandedStyles() {
@@ -32,15 +36,32 @@ class Graph extends React.Component<GraphProps> {
 	}
 
 	componentDidMount() {
+		this.chart = this.recreateChart();
+	}
+
+	componentDidUpdate() {
+		this.chart = this.recreateChart();
+	}
+
+	recreateChart() {
+		this.chart?.destroy();
+
 		let chartElement: any = document.getElementById("chart");
-		this.setState({
-			chart: new Chart(chartElement.getContext("2d"), ChartOptions),
+
+		return new Chart(chartElement.getContext("2d"), {
+			type: this.props.type,
+			data: {
+				labels: this.props.labels,
+				datasets: [this.props.data],
+			},
+			options: getChartOptions(this.props.label),
 		});
 	}
 
 	render() {
 		return (
 			<div
+				id="graph"
 				className={
 					"flex justify-center items-center absolute transition-{width} duration-500 md:h-full " +
 					(this.props.expanded
@@ -48,8 +69,8 @@ class Graph extends React.Component<GraphProps> {
 						: this.getNotExpandedStyles())
 				}
 			>
-				<main className="w-[95%] h-[95%]">
-					<div className="w-full h-full">
+				<main className="w-[90%] h-[90%]">
+					<div id="chart-wrapper" className="w-full h-full">
 						<canvas id="chart"></canvas>
 					</div>
 				</main>
