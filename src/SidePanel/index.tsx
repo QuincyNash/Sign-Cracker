@@ -12,7 +12,9 @@ interface SidePanelProps {
 	hidden: boolean;
 	fullnames: typeof fullnames;
 	signs: Array<Array<keyof typeof fullnames>>;
-	deleteSign: Function;
+	deleteSign: (index: number) => void;
+	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
+	addSign: (sign: Array<keyof typeof fullnames>) => void;
 	toggleHidden: React.MouseEventHandler;
 }
 
@@ -72,6 +74,8 @@ class SidePanel extends React.Component<SidePanelProps> {
 				<SignsPanel
 					fullnames={this.props.fullnames}
 					deleteSign={this.props.deleteSign}
+					changeSign={this.props.changeSign}
+					addSign={this.props.addSign}
 					signs={this.props.signs}
 				></SignsPanel>
 			);

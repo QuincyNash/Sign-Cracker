@@ -39,9 +39,14 @@ function getChartOptions(chartLabel: string) {
 				callbacks: {
 					title: (data) => {
 						let label: any = data[0].label;
-						return Object.entries(fullnames)[
-							Object.keys(fullnames).indexOf(label)
-						][1];
+
+						if (Object.keys(fullnames).includes(label)) {
+							return Object.entries(fullnames)[
+								Object.keys(fullnames).indexOf(label)
+							][1];
+						} else {
+							return label;
+						}
 					},
 					label: (data) => {
 						return `${chartLabel}: ${data.formattedValue}`;

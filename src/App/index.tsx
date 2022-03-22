@@ -2,6 +2,7 @@ import React from "react";
 import Graph from "../Graph";
 import SidePanel from "../SidePanel";
 import PositionFrequency from "./graphs/PositionFrequency";
+import SignLength from "./graphs/SignLength";
 
 interface AppState {
 	sidePanelHidden: boolean;
@@ -11,6 +12,7 @@ interface AppState {
 	graphType?: any;
 	graphLabel?: any;
 	graphLabels?: any;
+	editing?: number;
 	loader: Function;
 	loaderParams: Array<any>;
 }
@@ -43,28 +45,18 @@ class App extends React.Component {
 
 		this.toggleSidePanel = this.toggleSidePanel.bind(this);
 		this.deleteSign = this.deleteSign.bind(this);
+		this.changeSign = this.changeSign.bind(this);
+		this.addSign = this.addSign.bind(this);
 
 		this.state = {
 			sidePanelHidden: false,
 			fullnames,
 			signs: [
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
-				["H", "C", "RS", "LS", "B", "LE"],
+				["RS", "LS", "RB", "LB", "RW", "LW"],
+				["N", "C", "CP", "H", "LE", "RE"],
+				["CH", "B", "LC", "RC"],
 			],
-			loader: PositionFrequency,
+			loader: SignLength,
 			loaderParams: [],
 		};
 		this.state = this.load();
@@ -80,16 +72,17 @@ class App extends React.Component {
 		}
 	}
 
-	load() {
-		return this.loadGraph((a: any, b: any) =>
-			this.state.loader(a, b, ...this.state.loaderParams)
+	load(currentState = this.state) {
+		return this.loadGraph(
+			(a: any, b: any) => this.state.loader(a, b, ...this.state.loaderParams),
+			currentState
 		);
 	}
 
-	loadGraph(graphFunc: Function) {
-		let graph = graphFunc(this.state.signs, this.state.fullnames);
+	loadGraph(graphFunc: Function, currentState = this.state) {
+		let graph = graphFunc(currentState.signs, currentState.fullnames);
 
-		let newState = { ...this.state };
+		let newState = { ...currentState };
 		newState.graphData = {
 			label: graph.title,
 			data: graph.data,
@@ -139,11 +132,27 @@ class App extends React.Component {
 		this.setState(newState);
 	}
 
-	deleteSign(_e: React.MouseEvent, index: number) {
+	deleteSign(index: number) {
 		let newState = { ...this.state };
 		if (window.confirm("Are you sure you want to delete this sign?")) {
 			newState.signs.splice(index, 1);
-			newState = this.load();
+			newState = this.load(newState);
+			this.setState(newState);
+		}
+	}
+
+	changeSign(index: number, sign: Array<keyof typeof fullnames>) {
+		let newState = { ...this.state };
+		newState.signs[index] = sign;
+		newState = this.load(newState);
+		this.setState(newState);
+	}
+
+	addSign(sign: Array<keyof typeof fullnames>) {
+		if (sign.length > 0) {
+			let newState = { ...this.state };
+			newState.signs.push(sign);
+			newState = this.load(newState);
 			this.setState(newState);
 		}
 	}
@@ -191,6 +200,8 @@ class App extends React.Component {
 					fullnames={this.state.fullnames}
 					signs={this.state.signs}
 					deleteSign={this.deleteSign}
+					changeSign={this.changeSign}
+					addSign={this.addSign}
 					toggleHidden={this.toggleSidePanel}
 				></SidePanel>
 			</div>

@@ -1,16 +1,64 @@
 import React from "react";
+import Modal from "./modal";
 import { fullnames } from "../../App";
 
 interface SignsPanelProps {
 	signs: Array<Array<keyof typeof fullnames>>;
-	deleteSign: Function;
+	deleteSign: (index: number) => void;
+	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
+	addSign: (sign: Array<keyof typeof fullnames>) => void;
 	fullnames: typeof fullnames;
 }
 
+interface SignsPanelState {
+	editing?: number;
+	currentEdit?: Array<keyof typeof fullnames>;
+}
+
 class SignsPanel extends React.Component<SignsPanelProps> {
+	state: SignsPanelState;
+
+	constructor(props: any) {
+		super(props);
+
+		this.makeEditable = this.makeEditable.bind(this);
+		this.cancelEdit = this.cancelEdit.bind(this);
+		this.applyEdit = this.applyEdit.bind(this);
+
+		this.state = {};
+	}
+
+	makeEditable(_e: React.MouseEvent, y: number) {
+		let newState = { ...this.state };
+		newState.editing = y;
+		this.setState(newState);
+	}
+
+	cancelEdit(_e: React.MouseEvent) {
+		let newState = { ...this.state };
+		newState.editing = undefined;
+		this.setState(newState);
+	}
+
+	applyEdit(_e: React.MouseEvent) {
+		let newState = { ...this.state };
+		if (typeof newState.editing === "number") {
+			this.props.changeSign(newState.editing || 0, newState.currentEdit || []);
+		}
+		newState.editing = undefined;
+		newState.currentEdit = undefined;
+
+		this.setState(newState);
+	}
+
 	render() {
 		return (
 			<div className="w-full h-full bg-blue-200 overflow-auto dark:bg-[#6699cc]">
+				<Modal
+					open={typeof this.state.editing === "number"}
+					onCancel={this.cancelEdit}
+					onFinished={this.applyEdit}
+				></Modal>
 				<ol className="flex flex-col items-center w-full h-full gap-5 pt-8">
 					{this.props.signs.map((sign, i1) => {
 						return (
@@ -42,12 +90,15 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 										);
 									})}
 								</div>
-								<span className="material-icons-outlined cursor-pointer text-black rounded-md my-1 transition-colors md:my-3 hover:bg-[#d5d5e6] dark:text-gray-700 dark:hover:bg-[#bebebe]">
+								<span
+									className="material-icons-outlined cursor-pointer text-black rounded-md my-1 transition-colors md:my-3 hover:bg-[#d5d5e6] dark:text-gray-700 dark:hover:bg-[#bebebe]"
+									onClick={(e) => this.makeEditable(e, i1)}
+								>
 									edit
 								</span>
 								<span
 									className="material-icons-outlined cursor-pointer text-[#ff2828] rounded-md my-1 md:my-3 transition-colors hover:bg-[#f0d1d1] dark:hover:bg-red-300"
-									onClick={(e) => this.props.deleteSign(e, i1)}
+									onClick={() => this.props.deleteSign(i1)}
 								>
 									delete
 								</span>
