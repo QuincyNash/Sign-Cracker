@@ -1,10 +1,14 @@
-import { ChartOptions } from "chart.js";
+import { Chart, ChartOptions } from "chart.js";
 import { fullnames } from "../App";
 
 function getChartOptions(chartLabel: string) {
 	let isDark = document.documentElement.classList.contains("dark");
 	let color = isDark ? "#dcdcdc" : "#666";
 	let borderColor = isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
+
+	Chart.defaults.elements.point.hitRadius = 12;
+	Chart.defaults.elements.point.radius = 4;
+	Chart.defaults.elements.point.hoverRadius = 6;
 
 	const options: ChartOptions = {
 		responsive: true,

@@ -14,7 +14,6 @@ interface SidePanelProps {
 	signs: Array<Array<keyof typeof fullnames>>;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
-	addSign: (sign: Array<keyof typeof fullnames>) => void;
 	toggleHidden: React.MouseEventHandler;
 }
 
@@ -75,7 +74,6 @@ class SidePanel extends React.Component<SidePanelProps> {
 					fullnames={this.props.fullnames}
 					deleteSign={this.props.deleteSign}
 					changeSign={this.props.changeSign}
-					addSign={this.props.addSign}
 					signs={this.props.signs}
 				></SignsPanel>
 			);
@@ -93,7 +91,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 	}
 
 	getNotSelectedPanelStyles() {
-		return "bg-gray-300 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-[#dcdcdc] dark:hover:bg-gray-600";
+		return "bg-gray-300 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-cool-white dark:hover:bg-gray-600";
 	}
 
 	render() {
@@ -101,7 +99,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 			<div
 				id="side-panel"
 				className={
-					"flex flex-col w-full h-[50%] absolute left-0 top-[50%] transition-transform duration-500 md:left-[60%] md:top-0 md:w-2/5 md:h-full md:flex-row " +
+					"flex flex-col w-full h-[50%] absolute left-0 top-[50%] transition-transform duration-500 md:top-0 md:h-full md:left-1/2 md:w-1/2 md:flex-row " +
 					(this.props.hidden ? this.getHiddenStyles() : "")
 				}
 			>
@@ -111,7 +109,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 				>
 					<span
 						id="hide-icon"
-						className={"material-icons w-full h-full select-none text-4xl"}
+						className={"material-icons w-full h-full text-4xl"}
 					>
 						{this.getIconType()}
 					</span>
@@ -122,7 +120,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 							return (
 								<span
 									className={
-										"inline-block w-1/3 p-1 text-lg select-none cursor-pointer text-center font-serif transition-colors sm:text-xl md:text-xl md:p-0 lg:text-2xl xl:text-3xl " +
+										"inline-block w-1/3 p-1 text-lg cursor-pointer text-center font-serif transition-colors sm:text-xl md:text-2xl md:p-0 xl:text-3xl " +
 										(this.state.panel === panel
 											? this.getSelectedPanelStyles()
 											: this.getNotSelectedPanelStyles())

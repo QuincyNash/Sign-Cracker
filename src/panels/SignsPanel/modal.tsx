@@ -1,31 +1,107 @@
 import React from "react";
+import { fullnames } from "../../App";
 
 interface ModalProps {
 	open: boolean;
-	onCancel: React.MouseEventHandler;
-	onFinished: React.MouseEventHandler;
+	currentEdit: Array<keyof typeof fullnames>;
+	onCancel: (_e?: React.MouseEvent) => void;
+	onFinished: (_e?: React.MouseEvent) => void;
+	onBackspace: (_e?: React.MouseEvent) => void;
+	onAdd: (signal: keyof typeof fullnames) => void;
 }
 
 class Modal extends React.Component<ModalProps> {
 	constructor(props: any) {
 		super(props);
 
-		this.getModal = this.getModal.bind(this);
+		document.addEventListener("keydown", (event) => {
+			if (!event.repeat && this.props.open) {
+				if (event.key === "Enter") {
+					this.props.onFinished();
+				} else if (event.key === "Escape") {
+					this.props.onCancel();
+				} else if (event.key === "Backspace") {
+					this.props.onBackspace();
+				}
+			}
+		});
 	}
 
-	getModal() {
+	render() {
 		return (
-			<div className="fixed flex justify-center items-center z-[9999] top-0 left-0 w-full h-full bg-black bg-opacity-40">
-				<div className="relative w-4/5 h-4/5 rounded-sm bg-red-400 md:w-1/2 md:h-1/2">
-					<footer className="absolute bottom-0 w-full rounded-b-sm h-12 bg-white">
+			<div
+				className={`fixed flex justify-center items-center z-[9998] top-0 left-0 w-full h-full bg-black bg-opacity-40 transition-opacity ${
+					this.props.open
+						? "opacity-1 pointer-events-auto"
+						: "opacity-0 pointer-events-none"
+				}`}
+			>
+				<div className="relative flex flex-col w-4/5 h-4/5 rounded-sm md:w-2/3 md:h-2/3">
+					<header className="flex items-center w-full min-h-[3rem] flex-shrink-0 rounded-t-sm bg-white dark:bg-gray-700">
+						<div className="flex flex-wrap gap-y-2 justify-center items-center w-[calc(100%-3.5rem)] h-full bg-slate-400 dark:bg-slate-500">
+							{this.props.currentEdit.map((signal, i2) => {
+								return (
+									<div
+										key={i2}
+										className="signal-wrapper relative flex justify-center items-center max-w-[3rem] min-w-[24px] aspect-square max-h-full mx-1 rounded-sm transition-colors bg-gray-50  hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-400"
+										style={{
+											width: `${100 / this.props.currentEdit.length}%`,
+										}}
+									>
+										<span className="cursor-default">{signal}</span>
+										<div className="tooltip inline-block absolute z-[9999] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity dark:bg-gray-700">
+											{fullnames[signal]}
+										</div>
+										<div
+											className="tooltip-triangle w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity dark:bg-gray-700"
+											style={{
+												clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
+											}}
+										></div>
+									</div>
+								);
+							})}
+						</div>
+						<span
+							className="material-icons-outlined absolute right-2 px-1 leading-10 text-4xl rounded-sm cursor-pointer transition-colors text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-cool-white dark:hover:bg-gray-600"
+							onClick={this.props.onBackspace}
+						>
+							backspace
+						</span>
+					</header>
+					<main className="flex justify-center items-center w-full flex-grow bg-gray-500 dark:bg-gray-600">
+						<div className="flex flex-wrap gap-5 justify-center w-full">
+							{Object.keys(fullnames).map((name: any, i) => {
+								return (
+									<div
+										key={i}
+										className="signal-wrapper flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-sm bg-gray-100 md:w-16 md:h-16 dark:bg-cool-white"
+										onClick={() => this.props.onAdd(name)}
+									>
+										<span className="text-xl">{name}</span>
+										<div className="tooltip inline-block absolute z-[20000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity dark:bg-gray-700">
+											{fullnames[name as keyof typeof fullnames]}
+										</div>
+										<div
+											className="tooltip-triangle w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity dark:bg-gray-700"
+											style={{
+												clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
+											}}
+										></div>
+									</div>
+								);
+							})}
+						</div>
+					</main>
+					<footer className="w-full h-12 flex-shrink-0 rounded-b-sm bg-gray-100 dark:bg-gray-300">
 						<button
-							className="float-left p-0 w-20 h-full border-2 border-gray-400 rounded-sm text-gray-600 font-roboto text-opacity-70"
+							className="float-left p-0 w-20 h-full border-2 border-gray-400 bg-white rounded-sm text-gray-600 font-roboto text-opacity-70 dark:bg-gray-100"
 							onClick={this.props.onCancel}
 						>
 							Cancel
 						</button>
 						<button
-							className="float-right p-0 w-20 h-full rounded-sm text-white font-roboto bg-[#2196f3]"
+							className="float-right p-0 w-20 h-full rounded-sm text-white font-roboto bg-blue-submit"
 							onClick={this.props.onFinished}
 						>
 							Done
@@ -34,13 +110,6 @@ class Modal extends React.Component<ModalProps> {
 				</div>
 			</div>
 		);
-	}
-
-	render() {
-		if (this.props.open) {
-			return this.getModal();
-		}
-		return null;
 	}
 }
 

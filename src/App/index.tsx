@@ -18,20 +18,20 @@ interface AppState {
 }
 
 export enum fullnames {
-	RS = "Right Shoulder",
-	LS = "Left Shoulder",
-	RB = "Right Elbow",
-	LB = "Left Elbow",
-	RW = "Right Wrist",
-	LW = "Left Wrist",
-	N = "Nose",
-	C = "Chin",
 	CP = "Clap",
 	H = "Hat",
-	LE = "Left Ear",
-	RE = "Right Ear",
+	N = "Nose",
+	C = "Chin",
 	CH = "Chest",
 	B = "Belt",
+	LE = "Left Ear",
+	RE = "Right Ear",
+	LS = "Left Shoulder",
+	RS = "Right Shoulder",
+	LB = "Left Elbow",
+	RB = "Right Elbow",
+	LW = "Left Wrist",
+	RW = "Right Wrist",
 	LC = "Left Swipe",
 	RC = "Right Swipe",
 }
@@ -46,17 +46,12 @@ class App extends React.Component {
 		this.toggleSidePanel = this.toggleSidePanel.bind(this);
 		this.deleteSign = this.deleteSign.bind(this);
 		this.changeSign = this.changeSign.bind(this);
-		this.addSign = this.addSign.bind(this);
 
 		this.state = {
 			sidePanelHidden: false,
 			fullnames,
-			signs: [
-				["RS", "LS", "RB", "LB", "RW", "LW"],
-				["N", "C", "CP", "H", "LE", "RE"],
-				["CH", "B", "LC", "RC"],
-			],
-			loader: SignLength,
+			signs: [["B", "C", "CH", "LE", "LW", "RC"]],
+			loader: PositionFrequency,
 			loaderParams: [],
 		};
 		this.state = this.load();
@@ -143,18 +138,17 @@ class App extends React.Component {
 
 	changeSign(index: number, sign: Array<keyof typeof fullnames>) {
 		let newState = { ...this.state };
-		newState.signs[index] = sign;
+
+		console.log(index, sign);
+
+		if (sign.length > 0) {
+			newState.signs[index] = sign;
+		} else {
+			newState.signs.splice(index, 1);
+		}
+
 		newState = this.load(newState);
 		this.setState(newState);
-	}
-
-	addSign(sign: Array<keyof typeof fullnames>) {
-		if (sign.length > 0) {
-			let newState = { ...this.state };
-			newState.signs.push(sign);
-			newState = this.load(newState);
-			this.setState(newState);
-		}
 	}
 
 	render() {
@@ -166,9 +160,9 @@ class App extends React.Component {
 
 		return (
 			<div className="w-full h-full bg-white dark:bg-gray-700">
-				<div className="absolute ml-1 mt-1 w-6 h-6 border-gray-300 border-2 box-content rounded-md cursor-pointer z-50 transition-colors hover:bg-gray-200 dark:border-gray-500 dark:hover:bg-gray-600">
+				<div className="absolute z-[9999] ml-1 mt-1 w-6 h-6 border-gray-300 border-2 box-content rounded-md cursor-pointer transition-colors hover:bg-gray-200 dark:border-gray-500 dark:hover:bg-gray-600">
 					<span
-						className="material-icons w-full h-full dark:text-[#dcdcdc]"
+						className="material-icons w-full h-full dark:text-cool-white"
 						onClick={() => {
 							let isDark = document.documentElement.classList.toggle("dark");
 
@@ -201,7 +195,6 @@ class App extends React.Component {
 					signs={this.state.signs}
 					deleteSign={this.deleteSign}
 					changeSign={this.changeSign}
-					addSign={this.addSign}
 					toggleHidden={this.toggleSidePanel}
 				></SidePanel>
 			</div>

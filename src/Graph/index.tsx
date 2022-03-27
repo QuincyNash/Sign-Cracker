@@ -28,7 +28,7 @@ class Graph extends React.Component<GraphProps> {
 	}
 
 	getNotExpandedStyles() {
-		return "w-full h-[50%] will-change-auto md:w-3/5";
+		return "w-full h-[50%] will-change-auto md:w-1/2";
 	}
 
 	getExpandedStyles() {

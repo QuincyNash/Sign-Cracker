@@ -8,6 +8,7 @@
 	opacity: 0;
 }
 
-.signal-wrapper:hover {
-	background-color: rgba(74, 222, 128, 0.8);
+.material-icons,
+.material-icons-outlined {
+	user-select: none;
 }

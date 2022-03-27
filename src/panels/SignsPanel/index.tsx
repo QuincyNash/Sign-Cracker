@@ -6,7 +6,6 @@ interface SignsPanelProps {
 	signs: Array<Array<keyof typeof fullnames>>;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
-	addSign: (sign: Array<keyof typeof fullnames>) => void;
 	fullnames: typeof fullnames;
 }
 
@@ -24,6 +23,8 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 		this.makeEditable = this.makeEditable.bind(this);
 		this.cancelEdit = this.cancelEdit.bind(this);
 		this.applyEdit = this.applyEdit.bind(this);
+		this.backspace = this.backspace.bind(this);
+		this.addSignal = this.addSignal.bind(this);
 
 		this.state = {};
 	}
@@ -31,16 +32,21 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 	makeEditable(_e: React.MouseEvent, y: number) {
 		let newState = { ...this.state };
 		newState.editing = y;
+		if (this.props.signs[y]) {
+			newState.currentEdit = [...this.props.signs[y]];
+		} else {
+			newState.currentEdit = undefined;
+		}
 		this.setState(newState);
 	}
 
-	cancelEdit(_e: React.MouseEvent) {
+	cancelEdit(_e?: React.MouseEvent) {
 		let newState = { ...this.state };
 		newState.editing = undefined;
 		this.setState(newState);
 	}
 
-	applyEdit(_e: React.MouseEvent) {
+	applyEdit(_e?: React.MouseEvent) {
 		let newState = { ...this.state };
 		if (typeof newState.editing === "number") {
 			this.props.changeSign(newState.editing || 0, newState.currentEdit || []);
@@ -51,34 +57,56 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 		this.setState(newState);
 	}
 
+	backspace(_e?: React.MouseEvent) {
+		let newState = { ...this.state };
+		newState.currentEdit?.pop();
+		this.setState(newState);
+	}
+
+	addSignal(signal: keyof typeof fullnames) {
+		let newState = { ...this.state };
+
+		if (!newState.currentEdit) {
+			newState.currentEdit = [];
+		}
+		if (newState.currentEdit.length < 50) {
+			newState.currentEdit?.push(signal);
+		}
+
+		this.setState(newState);
+	}
+
 	render() {
 		return (
-			<div className="w-full h-full bg-blue-200 overflow-auto dark:bg-[#6699cc]">
+			<div className="w-full h-full bg-blue-200 overflow-auto dark:bg-bright-blue">
 				<Modal
 					open={typeof this.state.editing === "number"}
+					currentEdit={this.state.currentEdit || []}
 					onCancel={this.cancelEdit}
 					onFinished={this.applyEdit}
+					onBackspace={this.backspace}
+					onAdd={this.addSignal}
 				></Modal>
 				<ol className="flex flex-col items-center w-full h-full gap-5 pt-8">
-					{this.props.signs.map((sign, i1) => {
+					{this.props.signs.map((sign, index) => {
 						return (
 							<li
-								key={i1}
-								className="flex justify-center gap-x-3 w-5/6 h-8 md:h-12"
+								key={index}
+								className={`flex justify-center items-center gap-x-3 w-5/6`}
 							>
-								<div className="flex justify-center items-center w-3/4 h-full bg-red-400 shadow-md dark:shadow-gray-400">
+								<div className="flex flex-wrap gap-y-1 justify-center items-center w-3/4 h-auto bg-gray-100 rounded-sm shadow-lg shadow-neutral-400 dark:bg-neutral-300 dark:shadow-gray-500">
 									{sign.map((signal, i2) => {
 										return (
 											<div
 												key={i2}
-												className={`signal-wrapper relative flex justify-center items-center max-w-[2rem] aspect-square max-h-full mx-1 bg-green-400 transition-colors md:max-w-[3rem]`}
+												className="signal-wrapper relative flex justify-center items-center max-w-[2rem] min-w-[24px] aspect-square rounded-sm max-h-full mx-0.5 transition-colors shadow-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-cool-white dark:hover:bg-gray-700 dark:shadow-gray-500 md:max-w-[3rem]"
 												style={{
 													width: `${100 / sign.length}%`,
 												}}
 											>
 												<span className="cursor-default">{signal}</span>
-												<div className="tooltip inline-block absolute z-[1000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-[#dcdcdc] whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity  dark:bg-gray-700">
-													{this.props.fullnames[signal]}
+												<div className="tooltip inline-block absolute z-[1000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity dark:bg-gray-700">
+													{fullnames[signal]}
 												</div>
 												<div
 													className="tooltip-triangle w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity dark:bg-gray-700"
@@ -92,19 +120,30 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 								</div>
 								<span
 									className="material-icons-outlined cursor-pointer text-black rounded-md my-1 transition-colors md:my-3 hover:bg-[#d5d5e6] dark:text-gray-700 dark:hover:bg-[#bebebe]"
-									onClick={(e) => this.makeEditable(e, i1)}
+									onClick={(e) => this.makeEditable(e, index)}
 								>
 									edit
 								</span>
 								<span
 									className="material-icons-outlined cursor-pointer text-[#ff2828] rounded-md my-1 md:my-3 transition-colors hover:bg-[#f0d1d1] dark:hover:bg-red-300"
-									onClick={() => this.props.deleteSign(i1)}
+									onClick={() => this.props.deleteSign(index)}
 								>
 									delete
 								</span>
 							</li>
 						);
 					})}
+					<li
+						className="w-9 h-9 relative -translate-x-full rounded-full shadow-sm bg-blue-400 cursor-pointer transition-{box-shadow} duration-300 hover:shadow-lg dark:bg-blue-300"
+						onClick={(e) => this.makeEditable(e, this.props.signs.length)}
+					>
+						<span className="w-0 h-0 material-icons text-4xl leading-9">
+							add
+						</span>
+					</li>
+					<li>
+						<div className="w-px h-px"></div>
+					</li>
 				</ol>
 			</div>
 		);
