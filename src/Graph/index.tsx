@@ -54,7 +54,7 @@ class Graph extends React.Component<GraphProps> {
 				labels: this.props.labels,
 				datasets: [this.props.data],
 			},
-			options: getChartOptions(this.props.label),
+			options: getChartOptions(this.props.label, this.props.type),
 		});
 	}
 
@@ -63,7 +63,7 @@ class Graph extends React.Component<GraphProps> {
 			<div
 				id="graph"
 				className={
-					"flex justify-center items-center absolute transition-{width} duration-500 md:h-full " +
+					"flex justify-center items-center absolute select-none transition-{width} duration-500 md:h-full " +
 					(this.props.expanded
 						? this.getExpandedStyles()
 						: this.getNotExpandedStyles())

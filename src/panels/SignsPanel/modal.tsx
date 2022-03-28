@@ -62,20 +62,22 @@ class Modal extends React.Component<ModalProps> {
 								);
 							})}
 						</div>
-						<span
+						<button
 							className="material-icons-outlined absolute right-2 px-1 leading-10 text-4xl rounded-sm cursor-pointer transition-colors text-gray-700 hover:bg-gray-100 dark:bg-gray-700 dark:text-cool-white dark:hover:bg-gray-600"
+							tabIndex={this.props.open ? 0 : -1}
 							onClick={this.props.onBackspace}
 						>
 							backspace
-						</span>
+						</button>
 					</header>
 					<main className="flex justify-center items-center w-full flex-grow bg-gray-500 dark:bg-gray-600">
 						<div className="flex flex-wrap gap-5 justify-center w-full">
 							{Object.keys(fullnames).map((name: any, i) => {
 								return (
-									<div
+									<button
 										key={i}
-										className="signal-wrapper flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-sm bg-gray-100 md:w-16 md:h-16 dark:bg-cool-white"
+										className="signal-wrapper flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-sm bg-gray-100 hover:bg-gray-300 md:w-16 md:h-16 dark:bg-cool-white dark:hover:bg-gray-400"
+										tabIndex={this.props.open ? 0 : -1}
 										onClick={() => this.props.onAdd(name)}
 									>
 										<span className="text-xl">{name}</span>
@@ -88,7 +90,7 @@ class Modal extends React.Component<ModalProps> {
 												clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
 											}}
 										></div>
-									</div>
+									</button>
 								);
 							})}
 						</div>
@@ -96,12 +98,14 @@ class Modal extends React.Component<ModalProps> {
 					<footer className="w-full h-12 flex-shrink-0 rounded-b-sm bg-gray-100 dark:bg-gray-300">
 						<button
 							className="float-left p-0 w-20 h-full border-2 border-gray-400 bg-white rounded-sm text-gray-600 font-roboto text-opacity-70 dark:bg-gray-100"
+							tabIndex={this.props.open ? 0 : -1}
 							onClick={this.props.onCancel}
 						>
 							Cancel
 						</button>
 						<button
 							className="float-right p-0 w-20 h-full rounded-sm text-white font-roboto bg-blue-submit"
+							tabIndex={this.props.open ? 0 : -1}
 							onClick={this.props.onFinished}
 						>
 							Done

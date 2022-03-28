@@ -67,10 +67,11 @@ class SidePanel extends React.Component<SidePanelProps> {
 
 	getPanel() {
 		if (this.state.panel === "Analyze") {
-			return <AnalyzePanel></AnalyzePanel>;
+			return <AnalyzePanel hidden={this.props.hidden}></AnalyzePanel>;
 		} else if (this.state.panel === "Signs") {
 			return (
 				<SignsPanel
+					hidden={this.props.hidden}
 					fullnames={this.props.fullnames}
 					deleteSign={this.props.deleteSign}
 					changeSign={this.props.changeSign}
@@ -78,7 +79,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 				></SignsPanel>
 			);
 		} else if (this.state.panel === "Predict") {
-			return <PredictPanel></PredictPanel>;
+			return <PredictPanel hidden={this.props.hidden}></PredictPanel>;
 		}
 	}
 
@@ -103,8 +104,8 @@ class SidePanel extends React.Component<SidePanelProps> {
 					(this.props.hidden ? this.getHiddenStyles() : "")
 				}
 			>
-				<div
-					className="w-9 h-9 grow rounded-t md:rounded-none md:rounded-l cursor-pointer bg-gray-100 transition-colors hover:bg-gray-200  dark:bg-gray-400 dark:hover:bg-gray-300"
+				<button
+					className="flip-tab w-9 h-9 grow rounded-t md:rounded-none md:rounded-l cursor-pointer bg-gray-100 transition-colors hover:bg-gray-200  dark:bg-gray-400 dark:hover:bg-gray-300"
 					onClick={this.props.toggleHidden}
 				>
 					<span
@@ -113,23 +114,24 @@ class SidePanel extends React.Component<SidePanelProps> {
 					>
 						{this.getIconType()}
 					</span>
-				</div>
+				</button>
 				<main className="flex flex-col w-full h-[calc(100%-2.25rem)] md:h-full">
 					<nav>
 						{["Analyze", "Signs", "Predict"].map((panel: string, i) => {
 							return (
-								<span
+								<button
 									className={
-										"inline-block w-1/3 p-1 text-lg cursor-pointer text-center font-serif transition-colors sm:text-xl md:text-2xl md:p-0 xl:text-3xl " +
+										"flip-tab inline-block w-1/3 p-1 text-lg cursor-pointer text-center font-serif transition-colors sm:text-xl md:text-2xl md:p-0 xl:text-3xl " +
 										(this.state.panel === panel
 											? this.getSelectedPanelStyles()
 											: this.getNotSelectedPanelStyles())
 									}
 									key={i}
+									tabIndex={this.props.hidden ? -1 : 0}
 									onClick={() => this.switchPanel(panel)}
 								>
 									{panel}
-								</span>
+								</button>
 							);
 						})}
 					</nav>

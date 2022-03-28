@@ -1,8 +1,10 @@
 import React from "react";
 import Graph from "../Graph";
 import SidePanel from "../SidePanel";
-import PositionFrequency from "./graphs/PositionFrequency";
 import SignLength from "./graphs/SignLength";
+import SignalAnalysis from "./graphs/SignalAnalysis";
+import SignAnalysis from "./graphs/SignAnalysis";
+import PositionAnalysis from "./graphs/PositionAnalysis";
 
 interface AppState {
 	sidePanelHidden: boolean;
@@ -51,7 +53,7 @@ class App extends React.Component {
 			sidePanelHidden: false,
 			fullnames,
 			signs: [["B", "C", "CH", "LE", "LW", "RC"]],
-			loader: PositionFrequency,
+			loader: PositionAnalysis,
 			loaderParams: [],
 		};
 		this.state = this.load();
@@ -139,8 +141,6 @@ class App extends React.Component {
 	changeSign(index: number, sign: Array<keyof typeof fullnames>) {
 		let newState = { ...this.state };
 
-		console.log(index, sign);
-
 		if (sign.length > 0) {
 			newState.signs[index] = sign;
 		} else {
@@ -161,8 +161,8 @@ class App extends React.Component {
 		return (
 			<div className="w-full h-full bg-white dark:bg-gray-700">
 				<div className="absolute z-[9999] ml-1 mt-1 w-6 h-6 border-gray-300 border-2 box-content rounded-md cursor-pointer transition-colors hover:bg-gray-200 dark:border-gray-500 dark:hover:bg-gray-600">
-					<span
-						className="material-icons w-full h-full dark:text-cool-white"
+					<button
+						className="material-icons w-full h-full rounded-md !outline-offset-0 dark:text-cool-white"
 						onClick={() => {
 							let isDark = document.documentElement.classList.toggle("dark");
 
@@ -178,7 +178,7 @@ class App extends React.Component {
 						{document.documentElement.classList.contains("dark")
 							? "dark_mode"
 							: "light_mode"}
-					</span>
+					</button>
 				</div>
 				<Graph
 					data={this.state.graphData}

@@ -4,6 +4,7 @@ import { fullnames } from "../../App";
 
 interface SignsPanelProps {
 	signs: Array<Array<keyof typeof fullnames>>;
+	hidden: boolean;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
 	fullnames: typeof fullnames;
@@ -29,7 +30,16 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 		this.state = {};
 	}
 
-	makeEditable(_e: React.MouseEvent, y: number) {
+	setTabbable(tabbable: boolean) {
+		let items: NodeListOf<HTMLElement> = document.querySelectorAll(".flip-tab");
+		for (let i = 0; i < items.length; i++) {
+			items[i].tabIndex = tabbable ? 0 : -1;
+		}
+	}
+
+	makeEditable(y: number) {
+		this.setTabbable(false);
+
 		let newState = { ...this.state };
 		newState.editing = y;
 		if (this.props.signs[y]) {
@@ -41,6 +51,8 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 	}
 
 	cancelEdit(_e?: React.MouseEvent) {
+		this.setTabbable(true);
+
 		let newState = { ...this.state };
 		newState.editing = undefined;
 		this.setState(newState);
@@ -69,7 +81,7 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 		if (!newState.currentEdit) {
 			newState.currentEdit = [];
 		}
-		if (newState.currentEdit.length < 50) {
+		if (newState.currentEdit.length < 49) {
 			newState.currentEdit?.push(signal);
 		}
 
@@ -97,9 +109,15 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 								<div className="flex flex-wrap gap-y-1 justify-center items-center w-3/4 h-auto bg-gray-100 rounded-sm shadow-lg shadow-neutral-400 dark:bg-neutral-300 dark:shadow-gray-500">
 									{sign.map((signal, i2) => {
 										return (
-											<div
+											<button
 												key={i2}
 												className="signal-wrapper relative flex justify-center items-center max-w-[2rem] min-w-[24px] aspect-square rounded-sm max-h-full mx-0.5 transition-colors shadow-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-cool-white dark:hover:bg-gray-700 dark:shadow-gray-500 md:max-w-[3rem]"
+												tabIndex={
+													typeof this.state.editing === "number" ||
+													this.props.hidden
+														? -1
+														: 0
+												}
 												style={{
 													width: `${100 / sign.length}%`,
 												}}
@@ -114,32 +132,47 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 														clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
 													}}
 												></div>
-											</div>
+											</button>
 										);
 									})}
 								</div>
-								<span
+								<button
 									className="material-icons-outlined cursor-pointer text-black rounded-md my-1 transition-colors md:my-3 hover:bg-[#d5d5e6] dark:text-gray-700 dark:hover:bg-[#bebebe]"
-									onClick={(e) => this.makeEditable(e, index)}
+									tabIndex={
+										typeof this.state.editing === "number" || this.props.hidden
+											? -1
+											: 0
+									}
+									onClick={() => this.makeEditable(index)}
 								>
 									edit
-								</span>
-								<span
+								</button>
+								<button
 									className="material-icons-outlined cursor-pointer text-[#ff2828] rounded-md my-1 md:my-3 transition-colors hover:bg-[#f0d1d1] dark:hover:bg-red-300"
+									tabIndex={
+										typeof this.state.editing === "number" || this.props.hidden
+											? -1
+											: 0
+									}
 									onClick={() => this.props.deleteSign(index)}
 								>
 									delete
-								</span>
+								</button>
 							</li>
 						);
 					})}
-					<li
-						className="w-9 h-9 relative -translate-x-full rounded-full shadow-sm bg-blue-400 cursor-pointer transition-{box-shadow} duration-300 hover:shadow-lg dark:bg-blue-300"
-						onClick={(e) => this.makeEditable(e, this.props.signs.length)}
-					>
-						<span className="w-0 h-0 material-icons text-4xl leading-9">
+					<li className="w-9 h-9 relative -translate-x-full shadow-sm bg-blue-400 cursor-pointer rounded-full transition-{box-shadow} duration-300 hover:shadow-lg dark:bg-blue-300">
+						<button
+							className="material-icons text-4xl leading-9 rounded-full"
+							tabIndex={
+								typeof this.state.editing === "number" || this.props.hidden
+									? -1
+									: 0
+							}
+							onClick={() => this.makeEditable(this.props.signs.length)}
+						>
 							add
-						</span>
+						</button>
 					</li>
 					<li>
 						<div className="w-px h-px"></div>

@@ -1,14 +1,18 @@
 import React from "react";
 
-class PredictPanel extends React.Component {
+interface PredictPanelProps {
+	hidden: boolean;
+}
+
+class PredictPanel extends React.Component<PredictPanelProps> {
 	render() {
 		return (
 			<div className="w-fill h-full bg-purple-400">
 				<p>
-					Pie Graph - Sign Symbol Frequency
-					<br></br>Bar Graph - Number of Times a Symbol is in Different
-					Positions (for every symbol)
-					<br></br>Line Graph - Length of Signs over Time
+					Line Graph - Length
+					<br></br>Bar Graph - Position Analysis
+					<br></br>Bar Graph - Sign Analysis
+					<br></br>Bar Graph - Symbol Analysis
 				</p>
 			</div>
 		);

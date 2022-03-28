@@ -1,4 +1,4 @@
-import { fullnames } from "../";
+import { fullnames } from "..";
 
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
@@ -32,7 +32,7 @@ export default function convertData(
 	}
 
 	return {
-		type: "pie",
+		type: "bar",
 		title:
 			position !== undefined
 				? `Signal Usage at Position #${position}`

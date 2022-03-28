@@ -1,7 +1,7 @@
 import { Chart, ChartOptions } from "chart.js";
 import { fullnames } from "../App";
 
-function getChartOptions(chartLabel: string) {
+function getChartOptions(chartLabel: string, chartType: string) {
 	let isDark = document.documentElement.classList.contains("dark");
 	let color = isDark ? "#dcdcdc" : "#666";
 	let borderColor = isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
