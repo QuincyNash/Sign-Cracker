@@ -1,5 +1,5 @@
 import React from "react";
-import { fullnames } from "../App";
+import { result, fullnames } from "../App";
 import AnalyzePanel from "../panels/AnalyzePanel";
 import PredictPanel from "../panels/PredictPanel";
 import SignsPanel from "../panels/SignsPanel";
@@ -12,8 +12,10 @@ interface SidePanelProps {
 	hidden: boolean;
 	fullnames: typeof fullnames;
 	signs: Array<Array<keyof typeof fullnames>>;
+	results: Array<result>;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
+	changeGraph: (graph: Function, params?: Array<string | number>) => void;
 	toggleHidden: React.MouseEventHandler;
 }
 
@@ -30,7 +32,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 		this.getNotSelectedPanelStyles = this.getNotSelectedPanelStyles.bind(this);
 
 		this.state = {
-			panel: "Signs",
+			panel: "Analyze",
 		};
 	}
 
@@ -67,15 +69,22 @@ class SidePanel extends React.Component<SidePanelProps> {
 
 	getPanel() {
 		if (this.state.panel === "Analyze") {
-			return <AnalyzePanel hidden={this.props.hidden}></AnalyzePanel>;
+			return (
+				<AnalyzePanel
+					changeGraph={this.props.changeGraph}
+					signs={this.props.signs}
+					results={this.props.results}
+					hidden={this.props.hidden}
+				></AnalyzePanel>
+			);
 		} else if (this.state.panel === "Signs") {
 			return (
 				<SignsPanel
 					hidden={this.props.hidden}
-					fullnames={this.props.fullnames}
 					deleteSign={this.props.deleteSign}
 					changeSign={this.props.changeSign}
 					signs={this.props.signs}
+					results={this.props.results}
 				></SignsPanel>
 			);
 		} else if (this.state.panel === "Predict") {
@@ -110,7 +119,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 				>
 					<span
 						id="hide-icon"
-						className={"material-icons w-full h-full text-4xl"}
+						className="material-icons w-full h-full text-4xl"
 					>
 						{this.getIconType()}
 					</span>
@@ -135,7 +144,9 @@ class SidePanel extends React.Component<SidePanelProps> {
 							);
 						})}
 					</nav>
-					<div className="w-full grow overflow-auto">{this.getPanel()}</div>
+					<div id="side-panel-content" className="w-full grow overflow-auto">
+						{this.getPanel()}
+					</div>
 				</main>
 			</div>
 		);

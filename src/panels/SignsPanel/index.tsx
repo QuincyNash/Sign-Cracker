@@ -1,13 +1,13 @@
 import React from "react";
 import Modal from "./modal";
-import { fullnames } from "../../App";
+import { fullnames, result } from "../../App";
 
 interface SignsPanelProps {
 	signs: Array<Array<keyof typeof fullnames>>;
+	results: Array<result>;
 	hidden: boolean;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
-	fullnames: typeof fullnames;
 }
 
 interface SignsPanelState {

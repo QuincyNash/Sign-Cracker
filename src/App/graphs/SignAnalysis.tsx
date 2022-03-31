@@ -5,12 +5,21 @@ export default function convertData(
 	full: typeof fullnames,
 	position: number
 ) {
-	console.log(signs, full, position);
+	let names = Object.keys(fullnames);
+	let data: Array<number> = Array(names.length).fill(0);
+
+	for (let signal of signs[position - 1]) {
+		data[names.indexOf(signal)] += 1;
+	}
+
 	return {
 		type: "bar",
-		title: `Analysis of Sign #${position}`,
-		data: [5, 4, 3, 2, 1],
+		title:
+			position !== undefined
+				? `Signal Usage at Position #${position}`
+				: "Signal Usage",
+		data: data.filter((x) => x !== 0),
 		label: "# of Uses",
-		labels: ["", "", "", "", ""],
+		labels: names.filter((_x, i) => data[i] !== 0),
 	};
 }

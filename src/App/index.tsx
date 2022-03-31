@@ -10,6 +10,7 @@ interface AppState {
 	sidePanelHidden: boolean;
 	fullnames: typeof fullnames;
 	signs: Array<Array<keyof typeof fullnames>>;
+	results: Array<result>;
 	graphData?: any;
 	graphType?: any;
 	graphLabel?: any;
@@ -38,6 +39,32 @@ export enum fullnames {
 	RC = "Right Swipe",
 }
 
+export type result =
+	| "steal"
+	| "bunt-left"
+	| "bunt-right"
+	| "double-steal"
+	| "delayed-steal"
+	| "slash"
+	| "slash-and-run"
+	| "hit-and-run"
+	| "run-and-hit"
+	| "take"
+	| "4-seam"
+	| "2-seam"
+	| "cutter"
+	| "splitter"
+	| "forkball"
+	| "curveball"
+	| "knuckleball"
+	| "knuckle-curve"
+	| "slider"
+	| "sinker"
+	| "slurve"
+	| "screwball"
+	| "changeup"
+	| "palmball";
+
 class App extends React.Component {
 	state: AppState;
 	graph: any;
@@ -48,19 +75,35 @@ class App extends React.Component {
 		this.toggleSidePanel = this.toggleSidePanel.bind(this);
 		this.deleteSign = this.deleteSign.bind(this);
 		this.changeSign = this.changeSign.bind(this);
+		this.changeGraph = this.changeGraph.bind(this);
+
+		let signs = localStorage.getItem("sign-cracker-signs");
+		let results = localStorage.getItem("sign-cracker-results");
 
 		this.state = {
 			sidePanelHidden: false,
 			fullnames,
-			signs: [["B", "C", "CH", "LE", "LW", "RC"]],
+			signs: JSON.parse(signs || "[]"),
+			results: JSON.parse(results || "[]"),
 			loader: PositionAnalysis,
 			loaderParams: [],
 		};
 		this.state = this.load();
 
+		window.onbeforeunload = () => {
+			localStorage.setItem(
+				"sign-cracker-signs",
+				JSON.stringify(this.state.signs)
+			);
+			localStorage.setItem(
+				"sign-cracker-results",
+				JSON.stringify(this.state.results)
+			);
+		};
+
 		if (
-			localStorage.theme === "dark" ||
-			(!("theme" in localStorage) &&
+			localStorage["sign-cracker-theme"] === "dark" ||
+			(!("sign-cracker-theme" in localStorage) &&
 				window.matchMedia("(prefers-color-scheme: dark)").matches)
 		) {
 			document.documentElement.classList.add("dark");
@@ -71,7 +114,8 @@ class App extends React.Component {
 
 	load(currentState = this.state) {
 		return this.loadGraph(
-			(a: any, b: any) => this.state.loader(a, b, ...this.state.loaderParams),
+			(a: any, b: any) =>
+				currentState.loader(a, b, ...currentState.loaderParams),
 			currentState
 		);
 	}
@@ -110,6 +154,16 @@ class App extends React.Component {
 		newState.graphType = graph.type;
 
 		return newState;
+	}
+
+	changeGraph(graph: Function, params?: Array<string | number>) {
+		let newState = { ...this.state };
+
+		newState.loaderParams = params || [];
+		newState.loader = graph;
+		newState = this.load(newState);
+
+		this.setState(newState);
 	}
 
 	toggleSidePanel(_event: React.MouseEvent) {
@@ -167,9 +221,9 @@ class App extends React.Component {
 							let isDark = document.documentElement.classList.toggle("dark");
 
 							if (isDark) {
-								localStorage.setItem("theme", "dark");
+								localStorage.setItem("sign-cracker-theme", "dark");
 							} else {
-								localStorage.setItem("theme", "light");
+								localStorage.setItem("sign-cracker-theme", "light");
 							}
 
 							this.forceUpdate();
@@ -193,8 +247,10 @@ class App extends React.Component {
 					hidden={this.state.sidePanelHidden}
 					fullnames={this.state.fullnames}
 					signs={this.state.signs}
+					results={this.state.results}
 					deleteSign={this.deleteSign}
 					changeSign={this.changeSign}
+					changeGraph={this.changeGraph}
 					toggleHidden={this.toggleSidePanel}
 				></SidePanel>
 			</div>

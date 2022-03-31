@@ -3,11 +3,11 @@ import { fullnames } from "..";
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
 	full: typeof fullnames,
-	position?: number
+	position?: number | "final" | "second-to-last"
 ) {
 	let data: Array<Number> = [];
 
-	if (!position) {
+	if (position === undefined) {
 		for (let signal of Object.keys(full)) {
 			let signalCount = 0;
 
@@ -22,8 +22,18 @@ export default function convertData(
 			let signalCount = 0;
 
 			for (let sign of signs) {
-				if (sign[position - 1] === signal) {
-					signalCount += 1;
+				if (position === "final") {
+					if (sign[sign.length - 1] === signal) {
+						signalCount += 1;
+					}
+				} else if (position === "second-to-last") {
+					if (sign[sign.length - 2] === signal) {
+						signalCount += 1;
+					}
+				} else {
+					if (sign[position - 1] === signal) {
+						signalCount += 1;
+					}
 				}
 			}
 
@@ -35,7 +45,9 @@ export default function convertData(
 		type: "bar",
 		title:
 			position !== undefined
-				? `Signal Usage at Position #${position}`
+				? position === "final"
+					? "Last Signal Usage"
+					: `Signal Usage at Position #${position}`
 				: "Signal Usage",
 		data: data.filter((x) => x !== 0),
 		label:

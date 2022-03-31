@@ -25,6 +25,7 @@ function getChartOptions(chartLabel: string, chartType: string) {
 			y: {
 				beginAtZero: true,
 				ticks: {
+					stepSize: 1,
 					color,
 				},
 				grid: {

@@ -1,15 +1,43 @@
 import { fullnames } from "..";
+import converter from "number-to-words";
 
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
 	full: typeof fullnames,
-	signal: keyof typeof fullnames
+	signal: keyof typeof fullnames,
+	index?: number
 ) {
+	if (index !== undefined) {
+		signs = [signs[index - 1]];
+	}
+
+	let maxSignLength = 0;
+	for (let sign of signs) {
+		maxSignLength = Math.max(sign.length, maxSignLength);
+	}
+
+	let data: Array<number> = Array(maxSignLength).fill(0);
+
+	for (let sign of signs) {
+		for (let [i, s] of sign.entries()) {
+			if (s === signal) {
+				data[i] += 1;
+			}
+		}
+	}
+
+	console.log(data);
+
 	return {
 		type: "bar",
-		title: `Analysis of Signal #${fullnames[signal]}`,
-		data: [5, 4, 3, 2, 1],
+		title:
+			index === undefined
+				? `Analysis of '${fullnames[signal]}'`
+				: `Analysis of '${fullnames[signal]}' in ${converter.toOrdinal(
+						index
+				  )} Sign`,
+		data,
 		label: "Uses in Location",
-		labels: ["Position #1", "", "", "", ""],
+		labels: data.map((_x, i) => converter.toOrdinal(i + 1)),
 	};
 }
