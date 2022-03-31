@@ -1,9 +1,6 @@
 import React from "react";
 import Graph from "../Graph";
 import SidePanel from "../SidePanel";
-import SignLength from "./graphs/SignLength";
-import SignalAnalysis from "./graphs/SignalAnalysis";
-import SignAnalysis from "./graphs/SignAnalysis";
 import PositionAnalysis from "./graphs/PositionAnalysis";
 
 interface AppState {
