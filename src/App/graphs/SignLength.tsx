@@ -2,7 +2,8 @@ import { fullnames } from "../";
 
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
-	full: typeof fullnames
+	full: typeof fullnames,
+	results: any
 ) {
 	let data: Array<Number> = [],
 		labels: Array<string> = [];

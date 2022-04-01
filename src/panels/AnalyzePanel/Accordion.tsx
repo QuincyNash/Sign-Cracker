@@ -59,7 +59,7 @@ class Accordion extends React.Component<AccordionProps> {
 				<div
 					className={`flex items-center w-full h-10 bg-blue-300 shadow-md ${
 						typeof this.props.leftOffset === "number" ? "rounded-l-md" : ""
-					} cursor-pointer dark:bg-bright-blue`}
+					} cursor-pointer dark:shadow-gray-400 dark:bg-bright-blue`}
 					onClick={this.toggleOpen}
 				>
 					<span className="ml-2 text-lg font-roboto">{this.props.title}</span>

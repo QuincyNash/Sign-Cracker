@@ -1,7 +1,11 @@
 import React from "react";
 import Graph from "../Graph";
 import SidePanel from "../SidePanel";
+import SignLength from "./graphs/SignLength";
+import SignalAnalysis from "./graphs/SignalAnalysis";
+import SignAnalysis from "./graphs/SignAnalysis";
 import PositionAnalysis from "./graphs/PositionAnalysis";
+import ResultAnalysis from "./graphs/ResultAnalysis";
 
 interface AppState {
 	sidePanelHidden: boolean;
@@ -36,31 +40,60 @@ export enum fullnames {
 	RC = "Right Swipe",
 }
 
+export var results: Array<result> = [
+	"Nothing",
+	"Steal",
+	"Bunt Left",
+	"Bunt Right",
+	"Double Steal",
+	"Delayed Steal",
+	"Slash",
+	"Slash and Run",
+	"Hit and Run",
+	"Run and Hit",
+	"Take",
+	"4 Seam",
+	"2 Seam",
+	"Cutter",
+	"Splitter",
+	"Fork Ball",
+	"Curve Ball",
+	"Knuckle Ball",
+	"Knuckle Curve",
+	"Slider",
+	"Sinker",
+	"Slurve",
+	"Screw Ball",
+	"Change Up",
+	"Palm Ball",
+];
+
 export type result =
-	| "steal"
-	| "bunt-left"
-	| "bunt-right"
-	| "double-steal"
-	| "delayed-steal"
-	| "slash"
-	| "slash-and-run"
-	| "hit-and-run"
-	| "run-and-hit"
-	| "take"
-	| "4-seam"
-	| "2-seam"
-	| "cutter"
-	| "splitter"
-	| "forkball"
-	| "curveball"
-	| "knuckleball"
-	| "knuckle-curve"
-	| "slider"
-	| "sinker"
-	| "slurve"
-	| "screwball"
-	| "changeup"
-	| "palmball";
+	| "Nothing"
+	| "Steal"
+	| "Bunt Left"
+	| "Bunt Right"
+	| "Double Steal"
+	| "Delayed Steal"
+	| "Slash"
+	| "Slash and Run"
+	| "Hit and Run"
+	| "Run and Hit"
+	| "Take"
+	| "4 Seam"
+	| "2 Seam"
+	| "Cutter"
+	| "Splitter"
+	| "Fork Ball"
+	| "Curve Ball"
+	| "Knuckle Ball"
+	| "Knuckle Curve"
+	| "Slider"
+	| "Sinker"
+	| "Slurve"
+	| "Screw Ball"
+	| "Change Up"
+	| "Palm Ball";
 
 class App extends React.Component {
 	state: AppState;
@@ -72,20 +105,62 @@ class App extends React.Component {
 		this.toggleSidePanel = this.toggleSidePanel.bind(this);
 		this.deleteSign = this.deleteSign.bind(this);
 		this.changeSign = this.changeSign.bind(this);
+		this.changeResult = this.changeResult.bind(this);
 		this.changeGraph = this.changeGraph.bind(this);
 
 		let signs = localStorage.getItem("sign-cracker-signs");
 		let results = localStorage.getItem("sign-cracker-results");
+
+		let oldSelected = localStorage.getItem("sign-cracker-panel-selected");
+		let graph: Function, params: any;
+
+		if (oldSelected?.startsWith("signal")) {
+			graph = SignalAnalysis;
+			if (oldSelected.replace("signal ", "").includes(" ")) {
+				let nums: Array<string> = oldSelected.replace("signal ", "").split(" ");
+				params = [
+					Object.keys(fullnames)[parseInt(nums[0])],
+					parseInt(nums[1]) + 1,
+				];
+			} else {
+				params = [
+					Object.keys(fullnames)[parseInt(oldSelected.replace("signal ", ""))],
+				];
+			}
+		} else if (oldSelected?.startsWith("sign ")) {
+			graph = SignAnalysis;
+			params = [parseInt(oldSelected.replace("sign ", "")) + 1];
+		} else if (oldSelected === "position-final") {
+			graph = PositionAnalysis;
+			params = ["final"];
+		} else if (oldSelected === "position-2nd-to-last") {
+			graph = PositionAnalysis;
+			params = ["2nd-to-last"];
+		} else if (oldSelected?.startsWith("position")) {
+			graph = PositionAnalysis;
+			params = [parseInt(oldSelected.replace("position ", "")) + 1];
+		} else if (oldSelected === "length") {
+			graph = SignLength;
+		} else if (oldSelected === "all-results") {
+			graph = ResultAnalysis;
+		} else {
+			graph = PositionAnalysis;
+		}
+
+		if (params === undefined || Array.isArray(params && isNaN(params[0]))) {
+			params = [];
+		}
 
 		this.state = {
 			sidePanelHidden: false,
 			fullnames,
 			signs: JSON.parse(signs || "[]"),
 			results: JSON.parse(results || "[]"),
-			loader: PositionAnalysis,
-			loaderParams: [],
+			loader: graph,
+			loaderParams: params,
 		};
-		this.state = this.load();
+
+		this.state = this.load(this.state);
 
 		window.onbeforeunload = () => {
 			localStorage.setItem(
@@ -111,14 +186,18 @@ class App extends React.Component {
 
 	load(currentState = this.state) {
 		return this.loadGraph(
-			(a: any, b: any) =>
-				currentState.loader(a, b, ...currentState.loaderParams),
+			(a: any, b: any, c: any) =>
+				currentState.loader(a, b, c, ...currentState.loaderParams),
 			currentState
 		);
 	}
 
 	loadGraph(graphFunc: Function, currentState = this.state) {
-		let graph = graphFunc(currentState.signs, currentState.fullnames);
+		let graph = graphFunc(
+			currentState.signs,
+			currentState.fullnames,
+			currentState.results
+		);
 
 		let newState = { ...currentState };
 		newState.graphData = {
@@ -153,10 +232,10 @@ class App extends React.Component {
 		return newState;
 	}
 
-	changeGraph(graph: Function, params?: Array<string | number>) {
+	changeGraph(graph: Function, params?: Array<any>) {
 		let newState = { ...this.state };
 
-		newState.loaderParams = params || [];
+		newState.loaderParams = params ?? [];
 		newState.loader = graph;
 		newState = this.load(newState);
 
@@ -184,6 +263,7 @@ class App extends React.Component {
 		let newState = { ...this.state };
 		if (window.confirm("Are you sure you want to delete this sign?")) {
 			newState.signs.splice(index, 1);
+			newState.results.splice(index, 1);
 			newState = this.load(newState);
 			this.setState(newState);
 		}
@@ -194,11 +274,24 @@ class App extends React.Component {
 
 		if (sign.length > 0) {
 			newState.signs[index] = sign;
+			if (!newState.results[index]) {
+				newState.results[index] = "Nothing";
+			}
 		} else {
 			newState.signs.splice(index, 1);
+			newState.results.splice(index, 1);
 		}
 
 		newState = this.load(newState);
+		this.setState(newState);
+	}
+
+	changeResult(index: number, res: result) {
+		let newState = { ...this.state };
+
+		newState.results[index] = res;
+		newState = this.load(newState);
+
 		this.setState(newState);
 	}
 
@@ -247,6 +340,7 @@ class App extends React.Component {
 					results={this.state.results}
 					deleteSign={this.deleteSign}
 					changeSign={this.changeSign}
+					changeResult={this.changeResult}
 					changeGraph={this.changeGraph}
 					toggleHidden={this.toggleSidePanel}
 				></SidePanel>

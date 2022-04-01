@@ -3,6 +3,7 @@ import { fullnames } from "..";
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
 	full: typeof fullnames,
+	results: any,
 	position: number
 ) {
 	let names = Object.keys(fullnames);

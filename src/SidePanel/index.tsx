@@ -15,7 +15,8 @@ interface SidePanelProps {
 	results: Array<result>;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
-	changeGraph: (graph: Function, params?: Array<string | number>) => void;
+	changeGraph: (graph: Function, params?: Array<any>) => void;
+	changeResult: (index: number, res: result) => void;
 	toggleHidden: React.MouseEventHandler;
 }
 
@@ -31,8 +32,10 @@ class SidePanel extends React.Component<SidePanelProps> {
 		this.getSelectedPanelStyles = this.getSelectedPanelStyles.bind(this);
 		this.getNotSelectedPanelStyles = this.getNotSelectedPanelStyles.bind(this);
 
+		let oldPanel = localStorage.getItem("sign-cracker-current-panel");
+
 		this.state = {
-			panel: "Analyze",
+			panel: (oldPanel as "Signs") || "Signs",
 		};
 	}
 
@@ -64,6 +67,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 	switchPanel(panel: any) {
 		let newState = { ...this.state };
 		newState.panel = panel;
+		localStorage.setItem("sign-cracker-current-panel", panel);
 		this.setState(newState);
 	}
 
@@ -83,6 +87,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 					hidden={this.props.hidden}
 					deleteSign={this.props.deleteSign}
 					changeSign={this.props.changeSign}
+					changeResult={this.props.changeResult}
 					signs={this.props.signs}
 					results={this.props.results}
 				></SignsPanel>
@@ -115,6 +120,7 @@ class SidePanel extends React.Component<SidePanelProps> {
 			>
 				<button
 					className="flip-tab w-9 h-9 grow rounded-t md:rounded-none md:rounded-l cursor-pointer bg-gray-100 transition-colors hover:bg-gray-200  dark:bg-gray-400 dark:hover:bg-gray-300"
+					tabIndex={0}
 					onClick={this.props.toggleHidden}
 				>
 					<span

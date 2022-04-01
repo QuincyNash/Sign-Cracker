@@ -3,7 +3,8 @@ import { fullnames } from "..";
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
 	full: typeof fullnames,
-	position?: number | "final" | "second-to-last"
+	results: any,
+	position?: number | "final" | "2nd-to-last"
 ) {
 	let data: Array<Number> = [];
 
@@ -26,7 +27,7 @@ export default function convertData(
 					if (sign[sign.length - 1] === signal) {
 						signalCount += 1;
 					}
-				} else if (position === "second-to-last") {
+				} else if (position === "2nd-to-last") {
 					if (sign[sign.length - 2] === signal) {
 						signalCount += 1;
 					}
@@ -47,6 +48,8 @@ export default function convertData(
 			position !== undefined
 				? position === "final"
 					? "Last Signal Usage"
+					: position === "2nd-to-last"
+					? "2nd to Last Signal Usage"
 					: `Signal Usage at Position #${position}`
 				: "Signal Usage",
 		data: data.filter((x) => x !== 0),

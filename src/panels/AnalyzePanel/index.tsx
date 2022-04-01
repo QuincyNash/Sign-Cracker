@@ -1,18 +1,19 @@
 import React from "react";
 import converter from "number-to-words";
-import { fullnames, result } from "../../App";
+import { fullnames, result, results } from "../../App";
 import Accordion from "./Accordion";
 import Content from "./Content";
 import SignLength from "../../App/graphs/SignLength";
 import SignalAnalysis from "../../App/graphs/SignalAnalysis";
 import SignAnalysis from "../../App/graphs/SignAnalysis";
 import PositionAnalysis from "../../App/graphs/PositionAnalysis";
+import ResultAnalysis from "../../App/graphs/ResultAnalysis";
 
 interface AnalyzePanelProps {
 	hidden: boolean;
 	signs: Array<Array<keyof typeof fullnames>>;
 	results: Array<result>;
-	changeGraph: (graph: Function, params?: Array<string | number>) => void;
+	changeGraph: (graph: Function, params?: Array<any>) => void;
 }
 
 interface AnalyzePanelState {
@@ -29,7 +30,7 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 
 		let oldSelected = localStorage.getItem("sign-cracker-panel-selected");
 		this.state = {
-			selected: oldSelected ?? "all",
+			selected: oldSelected ?? "all-results",
 		};
 	}
 
@@ -70,16 +71,16 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 		}
 
 		return (
-			<div className="flex flex-col items-center gap-y-0.5 w-full h-max min-h-full bg-gray-100 dark:bg-cool-white">
+			<div className="flex flex-col items-center gap-y-0.5 w-full h-max min-h-full bg-gray-100 dark:bg-gray-300">
 				<Accordion
 					title="Analyze a Sign"
 					items={[
 						...this.props.signs.map((sign, i) => {
 							return {
 								text: `${converter.toWordsOrdinal(i + 1)} sign`,
-								isSelected: () => this.state.selected === `sign${i}`,
+								isSelected: () => this.state.selected === `sign ${i}`,
 								onClick: () => {
-									this.select(`sign${i}`);
+									this.select(`sign ${i}`);
 									this.props.changeGraph(SignAnalysis, [i + 1]);
 								},
 							};
@@ -94,9 +95,9 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 								fullnames[signal as keyof typeof fullnames],
 								{
 									text: "all signs",
-									isSelected: () => this.state.selected === `signal${i1}`,
+									isSelected: () => this.state.selected === `signal ${i1}`,
 									onClick: () => {
-										this.select(`signal${i1}`);
+										this.select(`signal ${i1}`);
 										this.props.changeGraph(SignalAnalysis, [signal]);
 									},
 								},
@@ -104,9 +105,9 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 									return {
 										text: `${converter.toWordsOrdinal(i2 + 1)} sign`,
 										isSelected: () =>
-											this.state.selected === `signal${i1}${i2}`,
+											this.state.selected === `signal ${i1} ${i2}`,
 										onClick: () => {
-											this.select(`signal${i1}${i2}`);
+											this.select(`signal ${i1} ${i2}`);
 											this.props.changeGraph(SignalAnalysis, [signal, i2 + 1]);
 										},
 									};
@@ -131,16 +132,31 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 							isSelected: () => this.state.selected === `position-2nd-to-last`,
 							onClick: () => {
 								this.select(`position-2nd-to-last`);
-								this.props.changeGraph(PositionAnalysis, ["second-to-last"]);
+								this.props.changeGraph(PositionAnalysis, ["2nd-to-last"]);
 							},
 						},
 						...new Array(maxSignLength).fill(null).map((_v, i) => {
 							return {
 								text: `${converter.toWordsOrdinal(i + 1)} signal`,
-								isSelected: () => this.state.selected === `position${i}`,
+								isSelected: () => this.state.selected === `position ${i}`,
 								onClick: () => {
-									this.select(`position${i}`);
+									this.select(`position ${i}`);
 									this.props.changeGraph(PositionAnalysis, [i + 1]);
+								},
+							};
+						}),
+					]}
+				></Accordion>
+				<Accordion
+					title="Analyze a Specific Result"
+					items={[
+						...results.map((res, i) => {
+							return {
+								text: res,
+								isSelected: () => this.state.selected === `result ${i}`,
+								onClick: () => {
+									this.select(`result ${i}`);
+									this.props.changeGraph(ResultAnalysis, [res]);
 								},
 							};
 						}),
@@ -156,10 +172,19 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 					leftOffset={0}
 				></Content>
 				<Content
-					text="all signals"
-					selected={this.state.selected === "all"}
+					text="all results"
+					selected={this.state.selected === "all-results"}
 					onClick={() => {
-						this.select("all");
+						this.select("all-results");
+						this.props.changeGraph(ResultAnalysis);
+					}}
+					leftOffset={0}
+				></Content>
+				<Content
+					text="all signals"
+					selected={this.state.selected === "all-signals"}
+					onClick={() => {
+						this.select("all-signals");
 						this.props.changeGraph(PositionAnalysis);
 					}}
 					leftOffset={0}

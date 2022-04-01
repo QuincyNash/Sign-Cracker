@@ -4,6 +4,7 @@ import converter from "number-to-words";
 export default function convertData(
 	signs: Array<Array<keyof typeof fullnames>>,
 	full: typeof fullnames,
+	results: any,
 	signal: keyof typeof fullnames,
 	index?: number
 ) {
@@ -25,8 +26,6 @@ export default function convertData(
 			}
 		}
 	}
-
-	console.log(data);
 
 	return {
 		type: "bar",

@@ -11,22 +11,6 @@ interface ModalProps {
 }
 
 class Modal extends React.Component<ModalProps> {
-	constructor(props: any) {
-		super(props);
-
-		document.addEventListener("keydown", (event) => {
-			if (!event.repeat && this.props.open) {
-				if (event.key === "Enter") {
-					this.props.onFinished();
-				} else if (event.key === "Escape") {
-					this.props.onCancel();
-				} else if (event.key === "Backspace") {
-					this.props.onBackspace();
-				}
-			}
-		});
-	}
-
 	render() {
 		return (
 			<div
@@ -76,7 +60,7 @@ class Modal extends React.Component<ModalProps> {
 								return (
 									<button
 										key={i}
-										className="signal-wrapper flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-sm bg-gray-100 hover:bg-gray-300 md:w-16 md:h-16 dark:bg-cool-white dark:hover:bg-gray-400"
+										className="signal-wrapper flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-md bg-gray-100 hover:bg-gray-300 md:w-16 md:h-16 dark:bg-cool-white dark:hover:bg-gray-400"
 										tabIndex={this.props.open ? 0 : -1}
 										onClick={() => this.props.onAdd(name)}
 									>
