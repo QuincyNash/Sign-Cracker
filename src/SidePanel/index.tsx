@@ -10,14 +10,14 @@ interface SidePanelState {
 
 interface SidePanelProps {
 	hidden: boolean;
-	fullnames: typeof fullnames;
+	toggleHidden: React.MouseEventHandler;
 	signs: Array<Array<keyof typeof fullnames>>;
+	fullnames: typeof fullnames;
 	results: Array<result>;
 	deleteSign: (index: number) => void;
 	changeSign: (index: number, sign: Array<keyof typeof fullnames>) => void;
 	changeGraph: (graph: Function, params?: Array<any>) => void;
 	changeResult: (index: number, res: result) => void;
-	toggleHidden: React.MouseEventHandler;
 }
 
 class SidePanel extends React.Component<SidePanelProps> {
