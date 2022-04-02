@@ -1,7 +1,6 @@
 import React from "react";
 import AnimateHeight from "react-animate-height";
 import Content from "./Content";
-import { v4 as UniqueId } from "uuid";
 
 type content = {
 	text: string;

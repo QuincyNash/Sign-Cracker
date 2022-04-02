@@ -1,12 +1,6 @@
 import React from "react";
 import converter from "number-to-words";
-import {
-	fullnames,
-	result,
-	results,
-	pitchingResults,
-	hittingResults,
-} from "../../App";
+import { fullnames, result, pitchingResults, hittingResults } from "../../App";
 import Accordion from "./Accordion";
 import Content from "./Content";
 import SignLength from "../../App/graphs/SignLength";
