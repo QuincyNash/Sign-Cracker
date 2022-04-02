@@ -30,8 +30,6 @@ export default function convertData(
 		}
 	}
 
-	console.log(data);
-
 	return {
 		type: "bar",
 		title:

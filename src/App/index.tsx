@@ -168,8 +168,6 @@ class App extends React.Component {
 			params = [];
 		}
 
-		console.log(params);
-
 		this.state = {
 			sidePanelHidden: false,
 			fullnames,
