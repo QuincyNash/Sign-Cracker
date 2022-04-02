@@ -1,6 +1,7 @@
 import React from "react";
 import AnimateHeight from "react-animate-height";
 import Content from "./Content";
+import { v4 as UniqueId } from "uuid";
 
 type content = {
 	text: string;
@@ -11,6 +12,7 @@ type nestedItems = Array<string | content | nestedItems>;
 
 interface AccordionProps {
 	title: string;
+	id: string;
 	leftOffset?: number;
 	marginTop?: number;
 	items: nestedItems;
@@ -28,11 +30,12 @@ class Accordion extends React.Component<AccordionProps> {
 
 		this.toggleOpen = this.toggleOpen.bind(this);
 
-		let oldState = localStorage.getItem(
-			`sign-cracker-${this.props.title.toLowerCase()}`
-		);
+		let oldState = localStorage.getItem(`sign-cracker-${this.props.id}`);
+		console.log(this.props.items);
 
-		this.state = { ...JSON.parse(oldState || '{"open":false}') };
+		this.state = {
+			...JSON.parse(oldState || '{"open": false}'),
+		};
 	}
 
 	toggleOpen(_e: React.MouseEvent) {
@@ -42,7 +45,7 @@ class Accordion extends React.Component<AccordionProps> {
 	}
 
 	componentWillUnmount() {
-		let name = `sign-cracker-${this.props.title.toLowerCase()}`;
+		let name = `sign-cracker-${this.props.id}`;
 		localStorage.setItem(name, JSON.stringify(this.state));
 	}
 
@@ -57,7 +60,7 @@ class Accordion extends React.Component<AccordionProps> {
 				}}
 			>
 				<div
-					className={`flex items-center w-full h-10 bg-blue-300 shadow-md ${
+					className={`flex items-center w-full h-10 transition-colors bg-blue-300 shadow-md ${
 						typeof this.props.leftOffset === "number" ? "rounded-l-md" : ""
 					} cursor-pointer dark:shadow-gray-400 dark:bg-bright-blue`}
 					onClick={this.toggleOpen}
@@ -80,6 +83,7 @@ class Accordion extends React.Component<AccordionProps> {
 							return (
 								<Accordion
 									title={item[0] as unknown as string}
+									id={item[1] as unknown as string}
 									key={i}
 									leftOffset={this.props.leftOffset ?? 20}
 									marginTop={2}

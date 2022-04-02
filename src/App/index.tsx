@@ -68,6 +68,9 @@ export var results: Array<result> = [
 	"Palm Ball",
 ];
 
+export var hittingResults: Array<result> = results.slice(1, 11);
+export var pitchingResults: Array<result> = results.slice(11);
+
 export type result =
 	| "Nothing"
 	| "Steal"
@@ -109,7 +112,7 @@ class App extends React.Component {
 		this.changeGraph = this.changeGraph.bind(this);
 
 		let signs = localStorage.getItem("sign-cracker-signs");
-		let results = localStorage.getItem("sign-cracker-results");
+		let res = localStorage.getItem("sign-cracker-results");
 
 		let oldSelected = localStorage.getItem("sign-cracker-panel-selected");
 		let graph: Function, params: any;
@@ -138,7 +141,21 @@ class App extends React.Component {
 			params = ["2nd-to-last"];
 		} else if (oldSelected?.startsWith("position")) {
 			graph = PositionAnalysis;
-			params = [parseInt(oldSelected.replace("position ", "")) + 1];
+			params = [results[parseInt(oldSelected.replace("position ", ""))]];
+		} else if (oldSelected?.startsWith("result")) {
+			graph = ResultAnalysis;
+			params = [results[parseInt(oldSelected.replace("result ", ""))]];
+		} else if (oldSelected?.startsWith("signal-result")) {
+			graph = SignalAnalysis;
+			let nums: Array<string> = oldSelected
+				.replace("signal-result ", "")
+				.split(" ");
+
+			params = [
+				Object.keys(fullnames)[parseInt(nums[0])],
+				"result",
+				results[parseInt(nums[1])],
+			];
 		} else if (oldSelected === "length") {
 			graph = SignLength;
 		} else if (oldSelected === "all-results") {
@@ -151,11 +168,13 @@ class App extends React.Component {
 			params = [];
 		}
 
+		console.log(params);
+
 		this.state = {
 			sidePanelHidden: false,
 			fullnames,
 			signs: JSON.parse(signs || "[]"),
-			results: JSON.parse(results || "[]"),
+			results: JSON.parse(res || "[]"),
 			loader: graph,
 			loaderParams: params,
 		};
@@ -303,7 +322,7 @@ class App extends React.Component {
 		}
 
 		return (
-			<div className="w-full h-full bg-white dark:bg-gray-700">
+			<div className="w-full h-full transition-colors bg-white dark:bg-gray-700">
 				<div className="absolute z-[9999] ml-1 mt-1 w-6 h-6 border-gray-300 border-2 box-content rounded-md cursor-pointer transition-colors hover:bg-gray-200 dark:border-gray-500 dark:hover:bg-gray-600">
 					<button
 						className="material-icons w-full h-full rounded-md !outline-offset-0 dark:text-cool-white"

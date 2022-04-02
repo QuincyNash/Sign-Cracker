@@ -1,6 +1,12 @@
 import React from "react";
 import converter from "number-to-words";
-import { fullnames, result, results } from "../../App";
+import {
+	fullnames,
+	result,
+	results,
+	pitchingResults,
+	hittingResults,
+} from "../../App";
 import Accordion from "./Accordion";
 import Content from "./Content";
 import SignLength from "../../App/graphs/SignLength";
@@ -36,11 +42,7 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 
 	select(graph: string) {
 		let newState = { ...this.state };
-		if (newState.selected === graph) {
-			newState.selected = undefined;
-		} else {
-			newState.selected = graph;
-		}
+		newState.selected = graph;
 		this.setState(newState);
 	}
 
@@ -74,6 +76,7 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 			<div className="flex flex-col items-center gap-y-0.5 w-full h-max min-h-full bg-gray-100 dark:bg-gray-300">
 				<Accordion
 					title="Analyze a Sign"
+					id="analyze-sign"
 					items={[
 						...this.props.signs.map((sign, i) => {
 							return {
@@ -89,10 +92,14 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 				></Accordion>
 				<Accordion
 					title="Analyze a Specific Signal"
+					id="analyze-specific-symbol"
 					items={[
 						...Object.keys(fullnames).map((signal, i1) => {
 							return [
 								fullnames[signal as keyof typeof fullnames],
+								`${fullnames[
+									signal as keyof typeof fullnames
+								].toLowerCase()}-${i1}`,
 								{
 									text: "all signs",
 									isSelected: () => this.state.selected === `signal ${i1}`,
@@ -101,23 +108,88 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 										this.props.changeGraph(SignalAnalysis, [signal]);
 									},
 								},
-								...this.props.signs.map((_sign, i2) => {
-									return {
-										text: `${converter.toWordsOrdinal(i2 + 1)} sign`,
+								[
+									"Specific Signs",
+									`specific-signs-${i1}`,
+									...this.props.signs.map((_sign, i2) => {
+										return {
+											text: `${converter.toWordsOrdinal(i2 + 1)} sign`,
+											isSelected: () =>
+												this.state.selected === `signal ${i1} ${i2}`,
+											onClick: () => {
+												this.select(`signal ${i1} ${i2}`);
+												this.props.changeGraph(SignalAnalysis, [
+													signal,
+													i2 + 1,
+												]);
+											},
+										};
+									}),
+								],
+								[
+									"Specific Results",
+									`specific-results-${i1}`,
+									{
+										text: "Nothing",
 										isSelected: () =>
-											this.state.selected === `signal ${i1} ${i2}`,
+											this.state.selected === `signal-result ${i1} 0`,
 										onClick: () => {
-											this.select(`signal ${i1} ${i2}`);
-											this.props.changeGraph(SignalAnalysis, [signal, i2 + 1]);
+											this.select(`signal-result ${i1} 0`);
+											this.props.changeGraph(SignalAnalysis, [
+												signal,
+												"result",
+												"Nothing",
+											]);
 										},
-									};
-								}),
+									},
+									[
+										"Hitting Signs",
+										`hitting-signs-${i1}`,
+										...hittingResults.map((result, i2) => {
+											return {
+												text: result,
+												isSelected: () =>
+													this.state.selected ===
+													`signal-result ${i1} ${i2 + 1}`,
+												onClick: () => {
+													this.select(`signal-result ${i1} ${i2 + 1}`);
+													this.props.changeGraph(SignalAnalysis, [
+														signal,
+														"result",
+														result,
+													]);
+												},
+											};
+										}),
+									],
+									[
+										"Pitching Signs",
+										`pitching-signs-${i1}`,
+										...pitchingResults.map((result, i2) => {
+											return {
+												text: result,
+												isSelected: () =>
+													this.state.selected ===
+													`signal-result ${i1} ${i2 + 11}`,
+												onClick: () => {
+													this.select(`signal-result ${i1} ${i2 + 11}`);
+													this.props.changeGraph(SignalAnalysis, [
+														signal,
+														"result",
+														result,
+													]);
+												},
+											};
+										}),
+									],
+								],
 							];
 						}),
 					]}
 				></Accordion>
 				<Accordion
 					title="Analyze a Position"
+					id="analyze-position"
 					items={[
 						{
 							text: "last signal",
@@ -149,17 +221,44 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 				></Accordion>
 				<Accordion
 					title="Analyze a Specific Result"
+					id="analyze-specific-result"
 					items={[
-						...results.map((res, i) => {
-							return {
-								text: res,
-								isSelected: () => this.state.selected === `result ${i}`,
-								onClick: () => {
-									this.select(`result ${i}`);
-									this.props.changeGraph(ResultAnalysis, [res]);
-								},
-							};
-						}),
+						{
+							text: "Nothing",
+							isSelected: () => this.state.selected === `result 0`,
+							onClick: () => {
+								this.select(`result 0`);
+								this.props.changeGraph(ResultAnalysis, ["Nothing"]);
+							},
+						},
+						[
+							"Hitting Signs",
+							"hitting-signs",
+							...hittingResults.map((res, i) => {
+								return {
+									text: res,
+									isSelected: () => this.state.selected === `result ${i + 1}`,
+									onClick: () => {
+										this.select(`result ${i + 1}`);
+										this.props.changeGraph(ResultAnalysis, [res]);
+									},
+								};
+							}),
+						],
+						[
+							"Pitching Signs",
+							"pitching-signs",
+							...pitchingResults.map((res, i) => {
+								return {
+									text: res,
+									isSelected: () => this.state.selected === `result ${i + 11}`,
+									onClick: () => {
+										this.select(`result ${i + 11}`);
+										this.props.changeGraph(ResultAnalysis, [res]);
+									},
+								};
+							}),
+						],
 					]}
 				></Accordion>
 				<Content

@@ -12,10 +12,10 @@ class Content extends React.Component<ContentProps> {
 	render() {
 		return (
 			<button
-				className={`h-8 rounded-l-md bg-gray-300 transition-colors ${
+				className={`group h-8 rounded-l-md transition-colors ${
 					this.props.selected
-						? "bg-green-400 dark:bg-green-600"
-						: "dark:bg-gray-500 dark:hover:bg-gray-600"
+						? "bg-emerald-400 hover:bg-emerald-300 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+						: "bg-gray-300 hover:bg-gray-200 dark:bg-gray-400 dark:hover:bg-gray-600"
 				}`}
 				onClick={this.props.onClick}
 				style={{
@@ -24,7 +24,7 @@ class Content extends React.Component<ContentProps> {
 					marginLeft: `${this.props.leftOffset ?? 20}px`,
 				}}
 			>
-				<p className="capitalize w-fit py-1 ml-2 text-black dark:text-cool-white text-base font-roboto">
+				<p className="capitalize w-fit py-1 ml-2 transition-colors text-black text-base font-roboto dark:group-hover:text-cool-white">
 					{this.props.text}
 				</p>
 			</button>

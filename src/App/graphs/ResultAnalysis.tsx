@@ -41,7 +41,7 @@ export default function convertData(
 				? "Sign Results"
 				: `Signal Usage in '${result}' Signs`,
 		data: Object.values(data),
-		label: "",
+		label: "# of Uses",
 		labels: Object.keys(data),
 	};
 }
