@@ -30,7 +30,6 @@ class Accordion extends React.Component<AccordionProps> {
 		this.toggleOpen = this.toggleOpen.bind(this);
 
 		let oldState = localStorage.getItem(`sign-cracker-${this.props.id}`);
-		console.log(this.props.items);
 
 		this.state = {
 			...JSON.parse(oldState || '{"open": false}'),
