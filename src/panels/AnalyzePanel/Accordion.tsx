@@ -28,8 +28,11 @@ class Accordion extends React.Component<AccordionProps> {
 		super(props);
 
 		this.toggleOpen = this.toggleOpen.bind(this);
+		this.saveState = this.saveState.bind(this);
 
 		let oldState = localStorage.getItem(`sign-cracker-${this.props.id}`);
+
+		setInterval(this.saveState, 1000);
 
 		this.state = {
 			...JSON.parse(oldState || '{"open": false}'),
@@ -42,9 +45,13 @@ class Accordion extends React.Component<AccordionProps> {
 		this.setState(newState);
 	}
 
-	componentWillUnmount() {
+	saveState() {
 		let name = `sign-cracker-${this.props.id}`;
 		localStorage.setItem(name, JSON.stringify(this.state));
+	}
+
+	componentWillUnmount() {
+		this.saveState();
 	}
 
 	render() {

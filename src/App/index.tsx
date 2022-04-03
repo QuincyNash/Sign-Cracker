@@ -110,6 +110,7 @@ class App extends React.Component {
 		this.changeSign = this.changeSign.bind(this);
 		this.changeResult = this.changeResult.bind(this);
 		this.changeGraph = this.changeGraph.bind(this);
+		this.saveSigns = this.saveSigns.bind(this);
 
 		let signs = localStorage.getItem("sign-cracker-signs");
 		let res = localStorage.getItem("sign-cracker-results");
@@ -179,16 +180,9 @@ class App extends React.Component {
 
 		this.state = this.load(this.state);
 
-		window.onbeforeunload = () => {
-			localStorage.setItem(
-				"sign-cracker-signs",
-				JSON.stringify(this.state.signs)
-			);
-			localStorage.setItem(
-				"sign-cracker-results",
-				JSON.stringify(this.state.results)
-			);
-		};
+		window.addEventListener("beforeunload", this.saveSigns);
+		window.addEventListener("pagehide", this.saveSigns);
+		setInterval(this.saveSigns, 1000);
 
 		if (
 			localStorage["sign-cracker-theme"] === "dark" ||
@@ -199,6 +193,17 @@ class App extends React.Component {
 		} else {
 			document.documentElement.classList.remove("dark");
 		}
+	}
+
+	saveSigns() {
+		localStorage.setItem(
+			"sign-cracker-signs",
+			JSON.stringify(this.state.signs)
+		);
+		localStorage.setItem(
+			"sign-cracker-results",
+			JSON.stringify(this.state.results)
+		);
 	}
 
 	load(currentState = this.state) {

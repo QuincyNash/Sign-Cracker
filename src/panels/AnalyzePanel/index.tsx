@@ -27,6 +27,9 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 		super(props);
 
 		this.select = this.select.bind(this);
+		this.saveUserInfo = this.saveUserInfo.bind(this);
+
+		setInterval(this.saveUserInfo, 1000);
 
 		let oldSelected = localStorage.getItem("sign-cracker-panel-selected");
 		this.state = {
@@ -40,7 +43,7 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 		this.setState(newState);
 	}
 
-	componentWillUnmount() {
+	saveUserInfo() {
 		let elem = document.getElementById("side-panel-content");
 		if (elem) {
 			localStorage.setItem(
@@ -52,6 +55,10 @@ class AnalyzePanel extends React.Component<AnalyzePanelProps> {
 			"sign-cracker-panel-selected",
 			this.state.selected ?? ""
 		);
+	}
+
+	componentWillUnmount() {
+		this.saveUserInfo();
 	}
 
 	componentDidMount() {
