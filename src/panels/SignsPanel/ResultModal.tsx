@@ -24,7 +24,7 @@ class ResultModal extends React.Component<ResultModalProps> {
 								return (
 									<button
 										key={i}
-										className="signal-wrapper flex relative justify-center items-center w-12 h-12 text-xs break-words cursor-pointer shadow-md rounded-md bg-gray-100 hover:bg-gray-300 sm:w-16 sm:h-16 md:text-base lg:w-20 lg:h-20 dark:bg-cool-white dark:hover:bg-gray-400"
+										className="flex relative justify-center items-center w-12 h-12 text-xs break-words cursor-pointer shadow-md rounded-md bg-gray-100 hover:bg-gray-300 sm:w-16 sm:h-16 md:text-base lg:w-20 lg:h-20 dark:bg-cool-white dark:hover:bg-gray-400"
 										tabIndex={this.props.open ? 0 : -1}
 										onClick={() => this.props.onSelect(result as typeof result)}
 									>

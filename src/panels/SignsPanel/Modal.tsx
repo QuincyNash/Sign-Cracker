@@ -27,17 +27,17 @@ class Modal extends React.Component<ModalProps> {
 								return (
 									<div
 										key={i2}
-										className="signal-wrapper relative flex justify-center items-center max-w-[3rem] min-w-[24px] aspect-square max-h-full mx-1 rounded-sm transition-colors bg-gray-50  hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-400"
+										className="group relative flex justify-center items-center max-w-[3rem] min-w-[24px] aspect-square max-h-full mx-1 rounded-sm transition-colors bg-gray-50  hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-400"
 										style={{
 											width: `${100 / this.props.currentEdit.length}%`,
 										}}
 									>
 										<span className="cursor-default">{signal}</span>
-										<div className="tooltip inline-block absolute z-[9999] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity dark:bg-gray-700">
+										<div className="inline-block absolute z-[9999] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity group-hover:opacity-100 group-hover:visible opacity-0 invisible dark:bg-gray-700">
 											{fullnames[signal]}
 										</div>
 										<div
-											className="tooltip-triangle w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity dark:bg-gray-700"
+											className="w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity group-hover:opacity-100 group-hover:visible opacity-0 invisible dark:bg-gray-700"
 											style={{
 												clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
 											}}
@@ -60,16 +60,16 @@ class Modal extends React.Component<ModalProps> {
 								return (
 									<button
 										key={i}
-										className="signal-wrapper flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-md bg-gray-100 hover:bg-gray-300 md:w-16 md:h-16 dark:bg-cool-white dark:hover:bg-gray-400"
+										className="group flex relative justify-center items-center w-12 h-12 cursor-pointer shadow-md rounded-md bg-gray-100 hover:bg-gray-300 md:w-16 md:h-16 dark:bg-cool-white dark:hover:bg-gray-400"
 										tabIndex={this.props.open ? 0 : -1}
 										onClick={() => this.props.onAdd(name)}
 									>
 										<span className="text-xl">{name}</span>
-										<div className="tooltip inline-block absolute z-[20000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity dark:bg-gray-700">
+										<div className="inline-block absolute z-[20000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity group-hover:opacity-100 group-hover:visible opacity-0 invisible dark:bg-gray-700">
 											{fullnames[name as keyof typeof fullnames]}
 										</div>
 										<div
-											className="tooltip-triangle w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity dark:bg-gray-700"
+											className="w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity group-hover:opacity-100 group-hover:visible opacity-0 invisible dark:bg-gray-700"
 											style={{
 												clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
 											}}

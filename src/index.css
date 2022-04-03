@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.signal-wrapper:not(:hover):not(:focus-visible) .tooltip,
-.signal-wrapper:not(:hover):not(:focus-visible) .tooltip-triangle {
-	visibility: hidden;
-	opacity: 0;
-}
-
 .material-icons,
 .material-icons-outlined {
 	user-select: none;

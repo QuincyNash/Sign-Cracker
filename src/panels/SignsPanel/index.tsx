@@ -137,7 +137,7 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 										return (
 											<button
 												key={i2}
-												className="signal-wrapper relative flex justify-center items-center max-w-[2rem] min-w-[24px] aspect-square rounded-sm max-h-full mx-0.5 transition-colors shadow-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-cool-white dark:hover:bg-gray-700 dark:shadow-gray-500 md:max-w-[3rem]"
+												className="group relative flex justify-center items-center max-w-[2rem] min-w-[24px] aspect-square rounded-sm max-h-full mx-0.5 transition-colors shadow-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-cool-white dark:hover:bg-gray-700 dark:shadow-gray-500 md:max-w-[3rem]"
 												tabIndex={
 													this.state.editing !== undefined || this.props.hidden
 														? -1
@@ -148,11 +148,11 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 												}}
 											>
 												<span className="cursor-default">{signal}</span>
-												<div className="tooltip inline-block absolute z-[1000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity dark:bg-gray-700">
+												<div className="inline-block absolute z-[1000] bottom-[calc(100%+4px)] cursor-default py-1 px-2 text-sm font-medium text-cool-white whitespace-nowrap bg-gray-900 rounded-lg shadow-sm transition-opacity group-hover:opacity-100 group-hover:visible opacity-0 invisible dark:bg-gray-700">
 													{fullnames[signal]}
 												</div>
 												<div
-													className="tooltip-triangle w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity dark:bg-gray-700"
+													className="w-1.5 h-1 absolute bottom-[calc(100%+4px)] translate-y-full bg-gray-900 transition-opacity group-hover:opacity-100 group-hover:visible opacity-0 invisible dark:bg-gray-700"
 													style={{
 														clipPath: "polygon(0% 0%, 100% 0%, 50% 100%)",
 													}}
