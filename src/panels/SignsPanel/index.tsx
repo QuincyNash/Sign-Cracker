@@ -132,19 +132,19 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 								key={index}
 								className={`flex justify-center items-center gap-x-3 w-11/12`}
 							>
-								<div className="flex flex-wrap gap-y-1 justify-center items-center w-3/4 h-auto bg-gray-100 rounded-sm shadow-lg shadow-neutral-400 dark:bg-neutral-300 dark:shadow-gray-500">
+								<div className="flex flex-wrap gap-y-1 justify-center items-center w-3/4 h-auto min-h-[2rem] bg-gray-100 rounded-sm shadow-lg shadow-neutral-400 dark:bg-neutral-300 dark:shadow-gray-500 md:min-h-[2.5rem]">
 									{sign.map((signal, i2) => {
 										return (
 											<button
 												key={i2}
-												className="group relative flex justify-center items-center max-w-[2rem] min-w-[24px] aspect-square rounded-sm max-h-full mx-0.5 transition-colors shadow-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-cool-white dark:hover:bg-gray-700 dark:shadow-gray-500 md:max-w-[3rem]"
+												className="group relative flex justify-center items-center max-w-[2rem] min-w-[24px] aspect-square rounded-sm max-h-full mx-0.5 transition-colors shadow-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-cool-white dark:hover:bg-gray-700 dark:shadow-gray-500 md:max-w-[3rem] md:min-w-[28px]"
 												tabIndex={
 													this.state.editing !== undefined || this.props.hidden
 														? -1
 														: 0
 												}
 												style={{
-													width: `${100 / sign.length}%`,
+													width: `calc(${100 / sign.length}% - 4px)`,
 												}}
 											>
 												<span className="cursor-default">{signal}</span>

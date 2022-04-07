@@ -27,9 +27,11 @@ class Modal extends React.Component<ModalProps> {
 								return (
 									<div
 										key={i2}
-										className="group relative flex justify-center items-center max-w-[3rem] min-w-[24px] aspect-square max-h-full mx-1 rounded-sm transition-colors bg-gray-50  hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-400"
+										className="group relative flex justify-center items-center max-w-[3rem] min-w-[24px] aspect-square max-h-full mx-1 rounded-sm transition-colors bg-gray-50  hover:bg-gray-200 dark:bg-gray-300 dark:hover:bg-gray-400 md:min-w-[28px]"
 										style={{
-											width: `${100 / this.props.currentEdit.length}%`,
+											width: `calc(${
+												100 / this.props.currentEdit.length
+											}% - 8px)`,
 										}}
 									>
 										<span className="cursor-default">{signal}</span>
