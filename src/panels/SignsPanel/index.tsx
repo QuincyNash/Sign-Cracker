@@ -102,7 +102,7 @@ class SignsPanel extends React.Component<SignsPanelProps> {
 		if (!newState.currentEdit) {
 			newState.currentEdit = [];
 		}
-		if (newState.currentEdit.length < 49) {
+		if (newState.currentEdit.length < 30) {
 			newState.currentEdit?.push(signal);
 		}
 
